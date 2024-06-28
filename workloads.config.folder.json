@@ -11,6 +11,14 @@
         { 
             "name": "todomvc-web-components",
             "type":"static"
+        },
+        { 
+            "name": "news-site-next-third-party-basic",
+            "type":"static"
+        },
+        {
+            "name": "news-site-next-third-party-capital",
+            "type":"static"
         }
     ]
 }
