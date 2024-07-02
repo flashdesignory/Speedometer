@@ -29,14 +29,6 @@ export function loadFrame({ frame, url }) {
     });
 }
 
-export function unloadFrame(frame) {
-    return new Promise((resolve) => {
-        if (!frame.contentWindow)
-            resolve({ type: "unload-frame", status: "success" });
-        frame.contentWindow.onunload = () => resolve({ type: "unload-frame", status: "success" });
-    });
-}
-
 export function postMessageSent({ type }) {
     return new Promise(resolve => {
         // eslint-disable-next-line consistent-return
