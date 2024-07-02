@@ -30,7 +30,7 @@ export function loadFrame({ frame, url }) {
 }
 
 export function postMessageSent({ type }) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         // eslint-disable-next-line consistent-return
         window.onmessage = (e) => {
             if (e.data.type === type) {
@@ -441,7 +441,7 @@ export class BenchmarkRunner {
         performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
 
         for (const suite of suites) {
-            if (!suite.disabled){
+            if (!suite.disabled) {
                 await this._appendFrame();
                 this._page = new Page(this._frame);
                 await this._runSuite(suite);
@@ -495,11 +495,7 @@ export class BenchmarkRunner {
 
     async _prepareSuite(suite) {
         const frame = this._page._frame;
-        await Promise.all([
-            postMessageSent({ type: "app-ready" }),
-            loadFrame({ frame, url: `${suite.url}` }),
-            suite.prepare(this._page)
-        ]);
+        await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame, url: `${suite.url}` }), suite.prepare(this._page)]);
     }
 
     async _runTestAndRecordResults(suite, test) {

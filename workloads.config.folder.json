@@ -1,24 +1,24 @@
 {
     "workloads": [
-        { 
+        {
             "name": "news-site-next",
-            "type":"static"
+            "type": "static"
         },
         {
             "name": "news-site-nuxt",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-web-components",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "news-site-next-third-party-basic",
-            "type":"static"
+            "type": "static"
         },
         {
             "name": "news-site-next-third-party-capital",
-            "type":"static"
+            "type": "static"
         }
     ]
 }
