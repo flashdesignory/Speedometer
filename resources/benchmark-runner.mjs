@@ -502,14 +502,6 @@ export class BenchmarkRunner {
     }
 
     async _prepareSuite(suite) {
-        /* return new Promise((resolve) => {
-            const frame = this._page._frame;
-            frame.onload = async () => {
-                await suite.prepare(this._page);
-                resolve();
-            };
-            frame.src = `resources/${suite.url}`;
-        }); */
         const frame = this._page._frame;
         await Promise.all([
             postMessageSent({ type: "app-ready" }),
