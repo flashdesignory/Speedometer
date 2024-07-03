@@ -26,6 +26,7 @@
         "test:firefox": "node tests/run.mjs --browser firefox",
         "test:safari": "node tests/run.mjs --browser safari",
         "test:edge": "node tests/run.mjs --browser edge",
+        "copy-config": "npm explore @tkober/benchmark-workloads pnpm run copy:config:custom",
         "copy-workloads": "npm explore @tkober/benchmark-workloads pnpm run move:apps:custom"
     },
     "devDependencies": {
@@ -51,6 +52,6 @@
         "typescript": "^5.0.4"
     },
     "dependencies": {
-        "@tkober/benchmark-workloads": "^0.0.3"
+        "@tkober/benchmark-workloads": "^0.0.8"
     }
 }
