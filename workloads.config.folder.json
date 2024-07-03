@@ -20,6 +20,10 @@
         {
             "name": "news-site-next-third-party-capital",
             "type": "static"
+        },
+        {
+            "name": "hello-world",
+            "type": "static"
         }
     ]
 }
