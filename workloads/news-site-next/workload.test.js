@@ -1,28 +1,36 @@
-import { runWorkloadTest, BenchmarkTestStep, BenchmarkTestSuite, BenchmarkTestSuites } from "./workload-testing-utils.min.js";
+import { runWorkloadTest, BenchmarkTestStep, BenchmarkTestSuite, BenchmarkTestManager, forceLayout } from "./workload-testing-utils.min.js";
 
 /*
-await window.suites.run(["Navigation", "Dropdown"]);
-await window.suites.run(["Dropdown"]);
-await window.suites.run();
+await window.benchmarkTestManager.run(["Navigation", "Dropdown"]);
+await window.benchmarkTestManager.run(["Dropdown"]);
+await window.benchmarkTestManager.run();
+
+optional delay between interactions:
+window.testStepDelay = 1000;
 */
-window.suites = new BenchmarkTestSuites(window.name, [
+window.benchmarkTestManager = new BenchmarkTestManager(window.name, [
     new BenchmarkTestSuite("Navigation", [
         new BenchmarkTestStep("Navigate to US page", async () => {
             await runWorkloadTest(() => document.querySelector("#navbar-navlist-us-link").click());
+            await forceLayout();
         }),
         new BenchmarkTestStep("Navigate to World page", async () => {
             await runWorkloadTest(() => document.querySelector("#navbar-navlist-world-link").click());
+            await forceLayout();
         }),
         new BenchmarkTestStep("Navigate to Politics page", async () => {
             await runWorkloadTest(() => document.querySelector("#navbar-navlist-politics-link").click());
+            await forceLayout();
         }),
     ]),
     new BenchmarkTestSuite("Dropdown", [
         new BenchmarkTestStep("Toggle More Dropdown", async () => {
             await runWorkloadTest(() => document.querySelector("#navbar-dropdown-toggle").click());
+            await forceLayout();
         }),
         new BenchmarkTestStep("Toggle More Dropdown", async () => {
             await runWorkloadTest(() => document.querySelector("#navbar-dropdown-toggle").click());
+            await forceLayout();
         }),
     ]),
 ]);

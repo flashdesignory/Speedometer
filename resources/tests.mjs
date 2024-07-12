@@ -90,40 +90,52 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Next",
     url: "/workloads/news-site-next/",
-    tags: ["newssite", "language"],
+    tags: ["newssite", "language", "compare"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
-            for (let i = 0; i < 25; i++) {
+            /* for (let i = 0; i < 25; i++) {
                 page.querySelector("#navbar-dropdown-toggle").click();
                 page.layout();
                 page.querySelector("#navbar-dropdown-toggle").click();
                 page.layout();
-            }
+            } */
             page.querySelector("#navbar-navlist-us-link").click();
             page.layout();
         }),
         new BenchmarkTestStep("NavigateToWorld", (page) => {
-            for (let i = 0; i < 25; i++) {
+            /* for (let i = 0; i < 25; i++) {
                 page.querySelector("#navbar-dropdown-toggle").click();
                 page.layout();
                 page.querySelector("#navbar-dropdown-toggle").click();
                 page.layout();
-            }
+            } */
             page.querySelector("#navbar-navlist-world-link").click();
             page.layout();
         }),
         new BenchmarkTestStep("NavigateToPolitics", (page) => {
-            for (let i = 0; i < 25; i++) {
+            /* for (let i = 0; i < 25; i++) {
                 page.querySelector("#navbar-dropdown-toggle").click();
                 page.layout();
                 page.querySelector("#navbar-dropdown-toggle").click();
                 page.layout();
-            }
+            } */
             page.querySelector("#navbar-navlist-politics-link").click();
             page.layout();
         }),
     ],
+});
+
+Suites.push({
+    name: "NewsSite-Next-Test",
+    url: "/workloads/news-site-next/",
+    tags: ["newssite", "language", "compare"],
+    config: {
+        remote: true,
+        test: "Navigation", // used to get the correct BenchmarkSuite
+        steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
+    },
+    async prepare(page) {},
 });
 
 Suites.push({
