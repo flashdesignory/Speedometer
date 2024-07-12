@@ -323,8 +323,13 @@ class RAFTestInvoker extends TestInvoker {
         });
     }
 
-    _scheduleCallbacks(resolve) {
-        requestAnimationFrame(() => this._syncCallback());
+    async _scheduleCallbacks(resolve) {
+        await new Promise(resolve => {
+            requestAnimationFrame(async () => {
+                await this._syncCallback();
+                resolve();
+            });
+        });
         requestAnimationFrame(() => {
             setTimeout(() => {
                 this._asyncCallback();
@@ -515,7 +520,7 @@ export class BenchmarkRunner {
         let syncTime;
         let asyncStartTime;
         let asyncTime;
-        const runSync = () => {
+        const runSync = async () => {
             if (params.warmupBeforeSync) {
                 performance.mark("warmup-start");
                 const startTime = performance.now();
@@ -526,7 +531,7 @@ export class BenchmarkRunner {
             }
             performance.mark(startLabel);
             const syncStartTime = performance.now();
-            test.run(this._page);
+            await test.run(this._page);
             const syncEndTime = performance.now();
             performance.mark(syncEndLabel);
 
