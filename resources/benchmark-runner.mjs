@@ -323,10 +323,8 @@ class RAFTestInvoker extends TestInvoker {
         });
     }
 
-    async _scheduleCallbacks(resolve) {
-        requestAnimationFrame(async () => {
-            this._syncCallback();
-        });
+    _scheduleCallbacks(resolve) {
+        requestAnimationFrame(() => this._syncCallback());
         requestAnimationFrame(() => {
             setTimeout(() => {
                 this._asyncCallback();
