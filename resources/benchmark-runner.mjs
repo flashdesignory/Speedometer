@@ -516,7 +516,7 @@ export class BenchmarkRunner {
         let syncTime;
         let asyncStartTime;
         let asyncTime;
-        const runSync = async () => {
+        const runSync = () => {
             if (params.warmupBeforeSync) {
                 performance.mark("warmup-start");
                 const startTime = performance.now();
@@ -527,7 +527,7 @@ export class BenchmarkRunner {
             }
             performance.mark(startLabel);
             const syncStartTime = performance.now();
-            await test.run(this._page);
+            test.run(this._page);
             const syncEndTime = performance.now();
             performance.mark(syncEndLabel);
 
