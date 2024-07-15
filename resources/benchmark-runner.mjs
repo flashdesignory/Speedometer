@@ -324,11 +324,8 @@ class RAFTestInvoker extends TestInvoker {
     }
 
     async _scheduleCallbacks(resolve) {
-        await new Promise(resolve => {
-            requestAnimationFrame(async () => {
-                await this._syncCallback();
-                resolve();
-            });
+        requestAnimationFrame(async () => {
+            this._syncCallback();
         });
         requestAnimationFrame(() => {
             setTimeout(() => {
@@ -480,7 +477,6 @@ export class BenchmarkRunner {
         performance.mark(suitePrepareEndLabel);
 
         const getSuite = (suites, name) => suites.find(suite => suite.name === name);
-
         const tests = suite.config?.remote ? getSuite(this._page._frame.contentWindow.benchmarkTestManager.suites, suite.config.test).tests : suite.tests;
 
         performance.mark(suiteStartLabel);
