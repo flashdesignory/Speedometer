@@ -88,6 +88,20 @@ Suites.push({
 });
 
 Suites.push({
+    name: "NewsSite-Next-Test",
+    url: "/workloads/news-site-next/",
+    tags: ["newssite", "language", "compare"],
+    config: {
+        remote: true,
+        test: "Navigation", // used to get the correct BenchmarkSuite
+        steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
+    },
+    async prepare() {
+        return { type: "suite-prepare-complete", status: "success" };
+    },
+});
+
+Suites.push({
     name: "NewsSite-Next",
     url: "/workloads/news-site-next/",
     tags: ["newssite", "language", "compare"],
@@ -124,20 +138,6 @@ Suites.push({
             page.layout();
         }),
     ],
-});
-
-Suites.push({
-    name: "NewsSite-Next-Test",
-    url: "/workloads/news-site-next/",
-    tags: ["newssite", "language", "compare"],
-    config: {
-        remote: true,
-        test: "Navigation", // used to get the correct BenchmarkSuite
-        steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
-    },
-    async prepare() {
-        return { type: "suite-prepare-complete", status: "success" };
-    },
 });
 
 Suites.push({
