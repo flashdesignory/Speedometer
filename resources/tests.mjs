@@ -88,7 +88,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "NewsSite-Next-Test",
+    name: "NewsSite-Next-External",
     url: "/workloads/news-site-next/",
     tags: ["newssite", "language", "compare"],
     config: {
@@ -102,8 +102,8 @@ Suites.push({
 });
 
 Suites.push({
-    name: "NewsSite-Next",
-    url: "/workloads/news-site-next/",
+    name: "NewsSite-Next-S3",
+    url: "/temp/dist/index.html",
     tags: ["newssite", "language", "compare"],
     async prepare(page) {},
     tests: [
@@ -139,6 +139,45 @@ Suites.push({
         }),
     ],
 });
+
+/* Suites.push({
+    name: "NewsSite-Next-Workloads",
+    url: "/workloads/news-site-next/",
+    tags: ["newssite", "language", "compare"],
+    async prepare(page) {},
+    tests: [
+        new BenchmarkTestStep("NavigateToUS", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-us-link").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("NavigateToWorld", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-world-link").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("NavigateToPolitics", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-politics-link").click();
+            page.layout();
+        }),
+    ],
+}); */
 
 Suites.push({
     name: "NewsSite-Nuxt",
