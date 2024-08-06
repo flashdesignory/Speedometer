@@ -457,7 +457,6 @@ export class BenchmarkRunner {
         performance.mark(finalizeStartLabel);
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
-        await new Promise((resolve) => setTimeout(resolve, 1));
         await this._finalize();
         performance.mark(finalizeEndLabel);
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
