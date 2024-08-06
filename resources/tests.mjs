@@ -93,7 +93,7 @@ Suites.push({
     tags: ["newssite", "language", "compare"],
     config: {
         remote: true,
-        test: "Navigation", // used to get the correct BenchmarkSuite
+        name: "Navigation", // used to get the correct BenchmarkSuite
         steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
     },
     async prepare(page) {

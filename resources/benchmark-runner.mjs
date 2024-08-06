@@ -473,7 +473,7 @@ export class BenchmarkRunner {
         await this._prepareSuite(suite);
         performance.mark(suitePrepareEndLabel);
 
-        const tests = suite.config?.remote ? this._page._frame.contentWindow.benchmarkTestManager.getSuiteByName(suite.config.test).tests : suite.tests;
+        const tests = suite.config?.remote ? this._page._frame.contentWindow.benchmarkTestManager.getSuiteByName(suite.config.name).tests : suite.tests;
 
         performance.mark(suiteStartLabel);
         for (const test of tests)
