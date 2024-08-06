@@ -103,7 +103,7 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Next-S3",
-    url: "/temp/dist/index.html",
+    url: "/workloads/news-site-next/",
     tags: ["newssite", "language", "compare"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
