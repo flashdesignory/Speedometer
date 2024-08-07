@@ -440,13 +440,17 @@ export class BenchmarkRunner {
         performance.mark(prepareEndLabel);
         performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
 
-        for (const suite of suites) {
-            if (!suite.disabled) {
-                await this._appendFrame();
-                this._page = new Page(this._frame);
-                await this._runSuite(suite);
-                this._removeFrame();
+        try {
+            for (const suite of suites) {
+                if (!suite.disabled) {
+                    await this._appendFrame();
+                    this._page = new Page(this._frame);
+                    await this._runSuite(suite);
+                    this._removeFrame();
+                }
             }
+        } finally {
+            await this._finishRunAllSuites();
         }
     }
 
