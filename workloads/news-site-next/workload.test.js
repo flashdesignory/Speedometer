@@ -1,39 +1,49 @@
-import { BenchmarkTestStep, BenchmarkTestSuite, BenchmarkTestManager, Page } from "./workload-testing-utils.min.js";
+import { BenchmarkTestStep, BenchmarkTestSuite, BenchmarkTestManager, forceLayout, getElement } from "./workload-testing-utils.min.js";
 
 window.benchmarkTestManager = new BenchmarkTestManager(window.name, [
     new BenchmarkTestSuite("Navigation", [
-        new BenchmarkTestStep("NavigateToUS", () => {
-            const page = new Page(document);
+        new BenchmarkTestStep("Navigate to US page", () => {
             for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
+                getElement("#navbar-dropdown-toggle").click();
+                forceLayout();
+                getElement("#navbar-dropdown-toggle").click();
+                forceLayout();
             }
-            page.querySelector("#navbar-navlist-us-link").click();
-            page.layout();
+
+            getElement("#navbar-navlist-us-link").click();
+            forceLayout();
         }),
-        new BenchmarkTestStep("NavigateToWorld", () => {
-            const page = new Page(document);
+        new BenchmarkTestStep("Navigate to World page", () => {
             for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
+                getElement("#navbar-dropdown-toggle").click();
+                forceLayout();
+                getElement("#navbar-dropdown-toggle").click();
+                forceLayout();
             }
-            page.querySelector("#navbar-navlist-world-link").click();
-            page.layout();
+
+            getElement("#navbar-navlist-world-link").click();
+            forceLayout();
         }),
-        new BenchmarkTestStep("NavigateToPolitics", () => {
-            const page = new Page(document);
+        new BenchmarkTestStep("Navigate to Politics page", () => {
             for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
+                getElement("#navbar-dropdown-toggle").click();
+                forceLayout();
+                getElement("#navbar-dropdown-toggle").click();
+                forceLayout();
             }
-            page.querySelector("#navbar-navlist-politics-link").click();
-            page.layout();
+
+            getElement("#navbar-navlist-politics-link").click();
+            forceLayout();
+        }),
+    ]),
+    new BenchmarkTestSuite("Dropdown", [
+        new BenchmarkTestStep("Toggle More Dropdown", () => {
+            getElement("#navbar-dropdown-toggle").click();
+            forceLayout();
+        }),
+        new BenchmarkTestStep("Toggle More Dropdown", () => {
+            getElement("#navbar-dropdown-toggle").click();
+            forceLayout();
         }),
     ]),
 ]);
