@@ -508,27 +508,34 @@ export class BenchmarkRunner {
             await this._client.willRunTest(suite, test);
 
         // Prepare all mark labels outside the measuring loop.
-        const startLabel = `${suite.name}.${test.name}-start`;
+        const syncStartLabel = `${suite.name}.${test.name}-sync-start`;
         const syncEndLabel = `${suite.name}.${test.name}-sync-end`;
         const asyncStartLabel = `${suite.name}.${test.name}-async-start`;
         const asyncEndLabel = `${suite.name}.${test.name}-async-end`;
 
-        let syncTime;
         let asyncStartTime;
+        let asyncEndTime;
         let asyncTime;
+
+        let startTime;
+
+        let syncTime;
+        let syncStartTime;
+        let syncEndTime;
+
         const runSync = () => {
             if (params.warmupBeforeSync) {
                 performance.mark("warmup-start");
-                const startTime = performance.now();
+                startTime = performance.now();
                 // Infinite loop for the specified ms.
                 while (performance.now() - startTime < params.warmupBeforeSync)
                     continue;
                 performance.mark("warmup-end");
             }
-            performance.mark(startLabel);
-            const syncStartTime = performance.now();
+            performance.mark(syncStartLabel);
+            syncStartTime = performance.now();
             test.run(this._page);
-            const syncEndTime = performance.now();
+            syncEndTime = performance.now();
             performance.mark(syncEndLabel);
 
             syncTime = syncEndTime - syncStartTime;
@@ -540,13 +547,13 @@ export class BenchmarkRunner {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
-            const asyncEndTime = performance.now();
+            asyncEndTime = performance.now();
             asyncTime = asyncEndTime - asyncStartTime;
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
             performance.mark(asyncEndLabel);
             if (params.warmupBeforeSync)
                 performance.measure("warmup", "warmup-start", "warmup-end");
-            performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
+            performance.measure(`${suite.name}.${test.name}-sync`, syncStartLabel, syncEndLabel);
             performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
         };
         const report = () => this._recordTestResults(suite, test, syncTime, asyncTime);
