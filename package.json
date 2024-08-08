@@ -52,6 +52,6 @@
         "typescript": "^5.0.4"
     },
     "dependencies": {
-        "@tkober/benchmark-workloads": "^0.2.0"
+        "@tkober/benchmark-workloads": "^0.2.1"
     }
 }
