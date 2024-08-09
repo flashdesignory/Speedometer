@@ -484,17 +484,37 @@ export class BenchmarkRunner {
         return suites;
     }
 
-    async _prepareSuite(suite) {
-        const suiteName = suite.name;
-        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
-        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
+    async _runAllSuites() {
+        this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
 
-        performance.mark(suitePrepareStartLabel);
+        const suites = this._prepareRunner();
 
-        await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame: this._page._frame, url: `${suite.url}` }), suite.prepare(this._page)]);
+        try {
+            for (const suite of suites) {
+                if (!suite.disabled) {
+                    await this._appendFrame();
+                    this._page = new Page(this._frame);
+                    await this._prepareSuite(suite);
+                    await this._runSuite(suite);
+                    this._validateSuiteTotal(suite.name);
+                    this._removeFrame();
+                }
+            }
+        } finally {
+            await this._finishRunAllSuites();
+        }
+    }
 
-        performance.mark(suitePrepareEndLabel);
-        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+    async _finishRunAllSuites() {
+        const finalizeStartLabel = "runner-finalize-start";
+        const finalizeEndLabel = "runner-finalize-end";
+
+        performance.mark(finalizeStartLabel);
+        // Remove frame to clear the view for displaying the results.
+        this._removeFrame();
+        await this._finalize();
+        performance.mark(finalizeEndLabel);
+        performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
     }
 
     async _runSuite(suite) {
@@ -520,37 +540,17 @@ export class BenchmarkRunner {
             throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
     }
 
-    async _finishRunAllSuites() {
-        const finalizeStartLabel = "runner-finalize-start";
-        const finalizeEndLabel = "runner-finalize-end";
+    async _prepareSuite(suite) {
+        const suiteName = suite.name;
+        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
+        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
 
-        performance.mark(finalizeStartLabel);
-        // Remove frame to clear the view for displaying the results.
-        this._removeFrame();
-        await this._finalize();
-        performance.mark(finalizeEndLabel);
-        performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
-    }
+        performance.mark(suitePrepareStartLabel);
 
-    async _runAllSuites() {
-        this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
+        await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame: this._page._frame, url: `${suite.url}` }), suite.prepare(this._page)]);
 
-        const suites = this._prepareRunner();
-
-        try {
-            for (const suite of suites) {
-                if (!suite.disabled) {
-                    await this._appendFrame();
-                    this._page = new Page(this._frame);
-                    await this._prepareSuite(suite);
-                    await this._runSuite(suite);
-                    this._validateSuiteTotal(suite.name);
-                    this._removeFrame();
-                }
-            }
-        } finally {
-            await this._finishRunAllSuites();
-        }
+        performance.mark(suitePrepareEndLabel);
+        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
     }
 
     async _runTestAndRecordResults(suite, test) {
