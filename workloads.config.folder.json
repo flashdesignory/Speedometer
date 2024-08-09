@@ -1,0 +1,29 @@
+{
+    "ports": [8081],
+    "workloads": [
+        {
+            "name": "news-site-next",
+            "type": "static"
+        },
+        {
+            "name": "news-site-nuxt",
+            "type": "static"
+        },
+        {
+            "name": "todomvc-web-components",
+            "type": "static"
+        },
+        {
+            "name": "news-site-next-third-party-basic",
+            "type": "static"
+        },
+        {
+            "name": "news-site-next-third-party-capital",
+            "type": "static"
+        },
+        {
+            "name": "hello-world",
+            "type": "static"
+        }
+    ]
+}
