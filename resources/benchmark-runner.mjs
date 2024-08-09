@@ -7,6 +7,14 @@ export class BenchmarkTestStep {
     constructor(testName, testFunction) {
         this.name = testName;
         this.run = testFunction;
+        this.isAsync = false;
+    }
+}
+
+export class AsyncBenchmarkTestStep extends BenchmarkTestStep {
+    constructor(testName, testFunction) {
+        super(testName, testFunction);
+        this.isAsync = true;
     }
 }
 
@@ -313,7 +321,24 @@ class TimerTestInvoker extends TestInvoker {
     }
 }
 
-class RAFTestInvoker extends TestInvoker {
+class AsyncTimerTestInvoker extends TestInvoker {
+    start() {
+        return new Promise((resolve) => {
+            setTimeout(async () => {
+                await this._syncCallback();
+                setTimeout(() => {
+                    this._asyncCallback();
+                    requestAnimationFrame(async () => {
+                        await this._reportCallback();
+                        resolve();
+                    });
+                }, 0);
+            }, params.waitBeforeSync);
+        });
+    }
+}
+
+class BaseRAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
             if (params.waitBeforeSync)
@@ -322,7 +347,9 @@ class RAFTestInvoker extends TestInvoker {
                 this._scheduleCallbacks(resolve);
         });
     }
+}
 
+class RAFTestInvoker extends BaseRAFTestInvoker {
     _scheduleCallbacks(resolve) {
         requestAnimationFrame(() => this._syncCallback());
         requestAnimationFrame(() => {
@@ -333,6 +360,23 @@ class RAFTestInvoker extends TestInvoker {
                     resolve();
                 }, 0);
             }, 0);
+        });
+    }
+}
+
+class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
+    _scheduleCallbacks(resolve) {
+        requestAnimationFrame(async () => {
+            await this._syncCallback();
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    this._asyncCallback();
+                    setTimeout(async () => {
+                        await this._reportCallback();
+                        resolve();
+                    }, 0);
+                }, 0);
+            });
         });
     }
 }
@@ -504,60 +548,80 @@ export class BenchmarkRunner {
     }
 
     async _runTestAndRecordResults(suite, test) {
+        /* eslint-disable-next-line no-async-promise-executor */
         if (this._client?.willRunTest)
             await this._client.willRunTest(suite, test);
 
         // Prepare all mark labels outside the measuring loop.
-        const syncStartLabel = `${suite.name}.${test.name}-sync-start`;
+        const startLabel = `${suite.name}.${test.name}-start`;
         const syncEndLabel = `${suite.name}.${test.name}-sync-end`;
         const asyncStartLabel = `${suite.name}.${test.name}-async-start`;
         const asyncEndLabel = `${suite.name}.${test.name}-async-end`;
 
-        let startTime;
-
-        let asyncStartTime;
-        let asyncEndTime;
-        let asyncTime;
-
         let syncTime;
-        let syncStartTime;
-        let syncEndTime;
+        let asyncStartTime;
+        let asyncTime;
+        let runSync;
+        let invokerClass;
+        if (!test.isAsync) {
+            invokerClass = params.measurementMethod === "raf" ? RAFTestInvoker : TimerTestInvoker;
+            runSync = () => {
+                if (params.warmupBeforeSync) {
+                    performance.mark("warmup-start");
+                    const startTime = performance.now();
+                    // Infinite loop for the specified ms.
+                    while (performance.now() - startTime < params.warmupBeforeSync)
+                        continue;
+                    performance.mark("warmup-end");
+                }
+                performance.mark(startLabel);
+                const syncStartTime = performance.now();
+                test.run(this._page);
+                const syncEndTime = performance.now();
+                performance.mark(syncEndLabel);
 
-        const runSync = () => {
-            if (params.warmupBeforeSync) {
-                performance.mark("warmup-start");
-                startTime = performance.now();
-                // Infinite loop for the specified ms.
-                while (performance.now() - startTime < params.warmupBeforeSync)
-                    continue;
-                performance.mark("warmup-end");
-            }
-            performance.mark(syncStartLabel);
-            syncStartTime = performance.now();
-            test.run(this._page);
-            syncEndTime = performance.now();
-            performance.mark(syncEndLabel);
+                syncTime = syncEndTime - syncStartTime;
 
-            syncTime = syncEndTime - syncStartTime;
+                performance.mark(asyncStartLabel);
+                asyncStartTime = performance.now();
+            };
+        } else {
+            invokerClass = params.measurementMethod === "raf" ? AsyncRAFTestInvoker : AsyncTimerTestInvoker;
+            runSync = async () => {
+                if (params.warmupBeforeSync) {
+                    performance.mark("warmup-start");
+                    const startTime = performance.now();
+                    // Infinite loop for the specified ms.
+                    while (performance.now() - startTime < params.warmupBeforeSync)
+                        continue;
+                    performance.mark("warmup-end");
+                }
+                performance.mark(startLabel);
+                const syncStartTime = performance.now();
+                await test.run(this._page);
+                const syncEndTime = performance.now();
+                performance.mark(syncEndLabel);
 
-            performance.mark(asyncStartLabel);
-            asyncStartTime = performance.now();
-        };
+                syncTime = syncEndTime - syncStartTime;
+
+                performance.mark(asyncStartLabel);
+                asyncStartTime = performance.now();
+            };
+        }
         const measureAsync = () => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
-            asyncEndTime = performance.now();
+            const asyncEndTime = performance.now();
             asyncTime = asyncEndTime - asyncStartTime;
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
             performance.mark(asyncEndLabel);
             if (params.warmupBeforeSync)
                 performance.measure("warmup", "warmup-start", "warmup-end");
-            performance.measure(`${suite.name}.${test.name}-sync`, syncStartLabel, syncEndLabel);
+            performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
             performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
         };
         const report = () => this._recordTestResults(suite, test, syncTime, asyncTime);
-        const invokerClass = params.measurementMethod === "raf" ? RAFTestInvoker : TimerTestInvoker;
         const invoker = new invokerClass(runSync, measureAsync, report);
 
         return invoker.start();

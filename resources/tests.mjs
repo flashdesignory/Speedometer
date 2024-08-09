@@ -289,13 +289,11 @@ Suites.push({
             const button = page.querySelector("#increase-btn");
             for (let i = 0; i < 10; i++)
                 button.click();
-
         }),
         new BenchmarkTestStep("DecreaseCounter", (page) => {
             const button = page.querySelector("#decrease-btn");
             for (let i = 0; i < 10; i++)
                 button.click();
-
         }),
     ],
 });
