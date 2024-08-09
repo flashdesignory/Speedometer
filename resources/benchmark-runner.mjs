@@ -495,7 +495,7 @@ export class BenchmarkRunner {
                     await this._appendFrame();
                     this._page = new Page(this._frame);
                     await this._prepareSuite(suite);
-                    await this._runSuite(suite);
+                    await this._runSuite(suite); // pseudo code: suite.config?.remote ? send postMessage; const result =  await postMessageSent({ type: "suite-complete" }) : await this._runSuite(suite);
                     this._validateSuiteTotal(suite.name);
                     this._removeFrame();
                 }
