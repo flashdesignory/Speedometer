@@ -462,9 +462,7 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    async _runAllSuites() {
-        this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
-
+    _prepareRunner() {
         const prepareStartLabel = "runner-prepare-start";
         const prepareEndLabel = "runner-prepare-end";
 
@@ -483,19 +481,43 @@ export class BenchmarkRunner {
         }
         performance.mark(prepareEndLabel);
         performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
+        return suites;
+    }
 
-        try {
-            for (const suite of suites) {
-                if (!suite.disabled) {
-                    await this._appendFrame();
-                    this._page = new Page(this._frame);
-                    await this._runSuite(suite);
-                    this._removeFrame();
-                }
-            }
-        } finally {
-            await this._finishRunAllSuites();
-        }
+    async _prepareSuite(suite) {
+        const suiteName = suite.name;
+        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
+        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
+
+        performance.mark(suitePrepareStartLabel);
+
+        await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame: this._page._frame, url: `${suite.url}` }), suite.prepare(this._page)]);
+
+        performance.mark(suitePrepareEndLabel);
+        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+    }
+
+    async _runSuite(suite) {
+        const suiteName = suite.name;
+        const suiteStartLabel = `suite-${suiteName}-start`;
+        const suiteEndLabel = `suite-${suiteName}-end`;
+
+        const tests = suite.config?.remote ? this._page._frame.contentWindow.benchmarkTestManager.getSuiteByName(suite.config.name).tests : suite.tests;
+
+        performance.mark(suiteStartLabel);
+        for (const test of tests)
+            await this._runTestAndRecordResults(suite, test);
+        performance.mark(suiteEndLabel);
+        performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
+    }
+
+    _validateSuiteTotal(suiteName) {
+        // When the test is fast and the precision is low (for example with Firefox'
+        // privacy.resistFingerprinting preference), it's possible that the measured
+        // total duration for an entire is 0.
+        const suiteTotal = this._measuredValues.tests[suiteName].total;
+        if (suiteTotal === 0)
+            throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
     }
 
     async _finishRunAllSuites() {
@@ -510,41 +532,25 @@ export class BenchmarkRunner {
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
     }
 
-    async _runSuite(suite) {
-        const suiteName = suite.name;
-        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
-        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
-        const suiteStartLabel = `suite-${suiteName}-start`;
-        const suiteEndLabel = `suite-${suiteName}-end`;
+    async _runAllSuites() {
+        this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
 
-        performance.mark(suitePrepareStartLabel);
-        await this._prepareSuite(suite);
-        performance.mark(suitePrepareEndLabel);
+        const suites = this._prepareRunner();
 
-        const tests = suite.config?.remote ? this._page._frame.contentWindow.benchmarkTestManager.getSuiteByName(suite.config.name).tests : suite.tests;
-
-        performance.mark(suiteStartLabel);
-        for (const test of tests)
-            await this._runTestAndRecordResults(suite, test);
-        performance.mark(suiteEndLabel);
-
-        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
-        performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
-        this._validateSuiteTotal(suiteName);
-    }
-
-    _validateSuiteTotal(suiteName) {
-        // When the test is fast and the precision is low (for example with Firefox'
-        // privacy.resistFingerprinting preference), it's possible that the measured
-        // total duration for an entire is 0.
-        const suiteTotal = this._measuredValues.tests[suiteName].total;
-        if (suiteTotal === 0)
-            throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
-    }
-
-    async _prepareSuite(suite) {
-        const frame = this._page._frame;
-        await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame, url: `${suite.url}` }), suite.prepare(this._page)]);
+        try {
+            for (const suite of suites) {
+                if (!suite.disabled) {
+                    await this._appendFrame();
+                    this._page = new Page(this._frame);
+                    await this._prepareSuite(suite);
+                    await this._runSuite(suite);
+                    this._validateSuiteTotal(suite.name);
+                    this._removeFrame();
+                }
+            }
+        } finally {
+            await this._finishRunAllSuites();
+        }
     }
 
     async _runTestAndRecordResults(suite, test) {
