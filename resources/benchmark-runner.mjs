@@ -513,11 +513,11 @@ export class BenchmarkRunner {
         const asyncStartLabel = `${suite.name}.${test.name}-async-start`;
         const asyncEndLabel = `${suite.name}.${test.name}-async-end`;
 
+        let startTime;
+
         let asyncStartTime;
         let asyncEndTime;
         let asyncTime;
-
-        let startTime;
 
         let syncTime;
         let syncStartTime;
