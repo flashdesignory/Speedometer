@@ -537,6 +537,12 @@ export class BenchmarkRunner {
         const response = await postMessageSent({ type: "suite-complete" });
 
         this._measuredValues.tests[suite.name] = response.result;
+
+        if (this._client?.didRunTest) {
+            for (let i = 0; i < suite.config?.steps; i++)
+                await this._client.didRunTest();
+
+        }
     }
 
     async _runSuite(suite) {
@@ -668,7 +674,7 @@ export class BenchmarkRunner {
         suiteResults.total += total;
 
         if (this._client?.didRunTest)
-            await this._client.didRunTest(suite, test);
+            await this._client.didRunTest();
     }
 
     async _finalize() {
