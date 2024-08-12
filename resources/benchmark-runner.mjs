@@ -495,7 +495,9 @@ export class BenchmarkRunner {
                     await this._appendFrame();
                     this._page = new Page(this._frame);
                     await this._prepareSuite(suite);
-                    await this._runSuite(suite); // pseudo code: suite.config?.remote ? send postMessage; const result =  await postMessageSent({ type: "suite-complete" }) : await this._runSuite(suite);
+                    // await this._runSuite(suite); // pseudo code: suite.config?.remote ? send postMessage; const result =  await postMessageSent({ type: "suite-complete" }) : await this._runSuite(suite);
+                    // eslint-disable-next-line no-unused-expressions
+                    suite.config?.remote ? await this._runRemoteSuite(suite) : await this._runSuite(suite);
                     this._validateSuiteTotal(suite.name);
                     this._removeFrame();
                 }
@@ -515,6 +517,26 @@ export class BenchmarkRunner {
         await this._finalize();
         performance.mark(finalizeEndLabel);
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
+    }
+
+    async _runRemoteSuite(suite) {
+        /* const suiteName = suite.name;
+        const suiteStartLabel = `suite-${suiteName}-start`;
+        const suiteEndLabel = `suite-${suiteName}-end`;
+
+        const tests = suite.config?.remote ? this._page._frame.contentWindow.benchmarkTestManager.getSuiteByName(suite.config.name).tests : suite.tests;
+
+        performance.mark(suiteStartLabel);
+        for (const test of tests)
+            await this._runTestAndRecordResults(suite, test);
+        performance.mark(suiteEndLabel);
+        performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel); */
+
+        const { waitBeforeSync, measurementMethod, warmupBeforeSync } = params;
+        this._frame.contentWindow.postMessage({ id: window.appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config.name, waitBeforeSync, measurementMethod, warmupBeforeSync }, "*");
+        const response = await postMessageSent({ type: "suite-complete" });
+
+        this._measuredValues.tests[suite.name] = response.result;
     }
 
     async _runSuite(suite) {
@@ -547,7 +569,8 @@ export class BenchmarkRunner {
 
         performance.mark(suitePrepareStartLabel);
 
-        await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame: this._page._frame, url: `${suite.url}` }), suite.prepare(this._page)]);
+        const response = await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame: this._page._frame, url: `${suite.url}` }), suite.prepare(this._page)]);
+        window.appId = response.find(value => value.type === "app-ready")?.appId;
 
         performance.mark(suitePrepareEndLabel);
         performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);

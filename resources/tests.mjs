@@ -101,6 +101,22 @@ Suites.push({
     },
 });
 
+/* Suites.push({
+    name: "NewsSite-Next-Remote",
+    url: "http://news-site-next-static.netlify.app",
+    tags: ["newssite", "language", "compare"],
+    config: {
+        remote: true,
+        name: "Navigation", // used to get the correct BenchmarkSuite
+        steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
+    },
+    async prepare(page) {
+        // await page.waitForElement("#navbar-dropdown-toggle");
+        const sleep = (ms) => new Promise(resolve => setTimeout(() => resolve(), ms));
+        await sleep(500);
+    },
+}); */
+
 Suites.push({
     name: "NewsSite-Next-S3",
     url: "/workloads/news-site-next/",
