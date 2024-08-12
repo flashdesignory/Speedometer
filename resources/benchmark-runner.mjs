@@ -550,7 +550,7 @@ export class BenchmarkRunner {
         const suiteStartLabel = `suite-${suiteName}-start`;
         const suiteEndLabel = `suite-${suiteName}-end`;
 
-        const tests = suite.config?.remote ? this._page._frame.contentWindow.benchmarkTestManager.getSuiteByName(suite.config.name).tests : suite.tests;
+        const tests = suite.config ? this._page._frame.contentWindow.benchmarkTestManager.getSuiteByName(suite.config.name).tests : suite.tests;
 
         performance.mark(suiteStartLabel);
         for (const test of tests)
