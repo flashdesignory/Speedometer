@@ -97,7 +97,7 @@ Suites.push({
         steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
     },
     async prepare(page) {
-        await page.waitForElement("#navbar-dropdown-toggle");
+        // await page.waitForElement("#navbar-dropdown-toggle");
     },
 });
 
@@ -111,7 +111,7 @@ Suites.push({
         steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
     },
     async prepare(page) {
-        await page.waitForElement("#navbar-dropdown-toggle");
+        // await page.waitForElement("#navbar-dropdown-toggle");
     },
 });
 
@@ -136,7 +136,7 @@ Suites.push({
     url: "/workloads/news-site-next/",
     tags: ["newssite", "language", "compare"],
     async prepare(page) {
-        await page.waitForElement("#navbar-dropdown-toggle");
+        // await page.waitForElement("#navbar-dropdown-toggle");
     },
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
