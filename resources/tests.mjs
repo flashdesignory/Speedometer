@@ -115,7 +115,7 @@ Suites.push({
     },
 });
 
-/* Suites.push({
+Suites.push({
     name: "NewsSite-Next-Remote",
     url: "http://news-site-next-static.netlify.app",
     tags: ["newssite", "language", "compare"],
@@ -126,10 +126,10 @@ Suites.push({
     },
     async prepare(page) {
         // await page.waitForElement("#navbar-dropdown-toggle");
-        const sleep = (ms) => new Promise(resolve => setTimeout(() => resolve(), ms));
-        await sleep(500);
+        // const sleep = (ms) => new Promise(resolve => setTimeout(() => resolve(), ms));
+        // await sleep(500);
     },
-}); */
+});
 
 Suites.push({
     name: "NewsSite-Next-S3",
