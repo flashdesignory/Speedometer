@@ -520,20 +520,8 @@ export class BenchmarkRunner {
     }
 
     async _runRemoteSuite(suite) {
-        /* const suiteName = suite.name;
-        const suiteStartLabel = `suite-${suiteName}-start`;
-        const suiteEndLabel = `suite-${suiteName}-end`;
-
-        const tests = suite.config?.remote ? this._page._frame.contentWindow.benchmarkTestManager.getSuiteByName(suite.config.name).tests : suite.tests;
-
-        performance.mark(suiteStartLabel);
-        for (const test of tests)
-            await this._runTestAndRecordResults(suite, test);
-        performance.mark(suiteEndLabel);
-        performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel); */
-
         const { waitBeforeSync, measurementMethod, warmupBeforeSync } = params;
-        this._frame.contentWindow.postMessage({ id: window.appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config.name, waitBeforeSync, measurementMethod, warmupBeforeSync }, "*");
+        this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config.name, waitBeforeSync, measurementMethod, warmupBeforeSync }, "*");
         const response = await postMessageSent({ type: "suite-complete" });
 
         this._measuredValues.tests[suite.name] = response.result;
@@ -576,7 +564,7 @@ export class BenchmarkRunner {
         performance.mark(suitePrepareStartLabel);
 
         const response = await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame: this._page._frame, url: `${suite.url}` }), suite.prepare(this._page)]);
-        window.appId = response.find(value => value.type === "app-ready")?.appId;
+        this._appId = response.find(value => value.type === "app-ready")?.appId;
 
         performance.mark(suitePrepareEndLabel);
         performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
