@@ -88,7 +88,7 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Next-Remote",
-    url: "http://news-site-next-static.netlify.app",
+    url: `${window.location.protocol}//news-site-next-static.netlify.app`,
     tags: ["newssite", "language", "compare"],
     disabled: true,
     config: {
