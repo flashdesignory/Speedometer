@@ -124,20 +124,14 @@ Suites.push({
         name: "Navigation", // used to get the correct BenchmarkSuite
         steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
     },
-    async prepare(page) {
-        // await page.waitForElement("#navbar-dropdown-toggle");
-        // const sleep = (ms) => new Promise(resolve => setTimeout(() => resolve(), ms));
-        // await sleep(500);
-    },
+    async prepare(page) {},
 });
 
 Suites.push({
     name: "NewsSite-Next-S3",
     url: "/workloads/news-site-next/",
     tags: ["newssite", "language", "compare"],
-    async prepare(page) {
-        // await page.waitForElement("#navbar-dropdown-toggle");
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
             for (let i = 0; i < 25; i++) {
