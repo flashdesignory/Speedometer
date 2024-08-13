@@ -57,40 +57,10 @@ Suites.enable = function (names, tags) {
 };
 
 Suites.push({
-    name: "TodoMVC-WebComponents",
-    url: "/workloads/todomvc-web-components/",
-    tags: ["todomvc", "webcomponents"],
-    async prepare(page) {},
-    tests: [
-        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
-            const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                input.setValue(getTodoText(defaultLanguage, i));
-                input.dispatchEvent("input");
-                input.enter("keyup");
-            }
-        }),
-        new BenchmarkTestStep("CompletingAllItems", (page) => {
-            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
-                item.click();
-            }
-        }),
-        new BenchmarkTestStep("DeletingAllItems", (page) => {
-            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) {
-                const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
-                item.click();
-            }
-        }),
-    ],
-});
-
-Suites.push({
     name: "NewsSite-Next-External",
     url: "/workloads/news-site-next/",
     tags: ["newssite", "language", "compare"],
+    disabled: true,
     config: {
         remote: true,
         name: "Navigation", // used to get the correct BenchmarkSuite
@@ -105,6 +75,7 @@ Suites.push({
     name: "NewsSite-Next-NoPostMessage",
     url: "/workloads/news-site-next/",
     tags: ["newssite", "language", "compare"],
+    disabled: true,
     config: {
         remote: false,
         name: "Navigation", // used to get the correct BenchmarkSuite
@@ -119,6 +90,7 @@ Suites.push({
     name: "NewsSite-Next-Remote",
     url: "http://news-site-next-static.netlify.app",
     tags: ["newssite", "language", "compare"],
+    disabled: true,
     config: {
         remote: true,
         name: "Navigation", // used to get the correct BenchmarkSuite
@@ -167,7 +139,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "NewsSite-Nuxt",
+    name: "NewsSite-Nuxt-S3",
     url: "/workloads/news-site-nuxt/",
     tags: ["newssite"],
     async prepare(page) {},
@@ -206,118 +178,32 @@ Suites.push({
 });
 
 Suites.push({
-    name: "Third-Party-Basic",
-    url: "/workloads/news-site-next-third-party-basic/",
-    tags: ["newssite", "language", "third-party"],
+    name: "TodoMVC-WebComponents-S3",
+    url: "/workloads/todomvc-web-components/",
+    tags: ["todomvc", "webcomponents"],
     async prepare(page) {},
     tests: [
-        new BenchmarkTestStep("NavigateToUS", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                input.setValue(getTodoText(defaultLanguage, i));
+                input.dispatchEvent("input");
+                input.enter("keyup");
             }
-            page.querySelector("#navbar-navlist-us-link").click();
-            page.layout();
         }),
-        new BenchmarkTestStep("NavigateToWorld", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
+        new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
+                item.click();
             }
-            page.querySelector("#navbar-navlist-world-link").click();
-            page.layout();
         }),
-        new BenchmarkTestStep("NavigateToPolitics", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
+        new BenchmarkTestStep("DeletingAllItems", (page) => {
+            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) {
+                const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
+                item.click();
             }
-            page.querySelector("#navbar-navlist-politics-link").click();
-            page.layout();
-        }),
-        new BenchmarkTestStep("NavigateToBusiness", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
-            page.querySelector("#navbar-navlist-business-link").click();
-            page.layout();
-        }),
-    ],
-});
-
-Suites.push({
-    name: "Third-Party-Capital",
-    url: "/workloads/news-site-next-third-party-capital/",
-    tags: ["newssite", "language", "third-party"],
-    async prepare(page) {},
-    tests: [
-        new BenchmarkTestStep("NavigateToUS", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
-            page.querySelector("#navbar-navlist-us-link").click();
-            page.layout();
-        }),
-        new BenchmarkTestStep("NavigateToWorld", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
-            page.querySelector("#navbar-navlist-world-link").click();
-            page.layout();
-        }),
-        new BenchmarkTestStep("NavigateToPolitics", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
-            page.querySelector("#navbar-navlist-politics-link").click();
-            page.layout();
-        }),
-        new BenchmarkTestStep("NavigateToBusiness", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
-            page.querySelector("#navbar-navlist-business-link").click();
-            page.layout();
-        }),
-    ],
-});
-
-Suites.push({
-    name: "Examples-Hello-World",
-    url: "/workloads/hello-world/",
-    tags: ["examples"],
-    async prepare(page) {},
-    tests: [
-        new BenchmarkTestStep("IncreasingCounter", (page) => {
-            const button = page.querySelector("#increase-btn");
-            for (let i = 0; i < 10; i++)
-                button.click();
-        }),
-        new BenchmarkTestStep("DecreaseCounter", (page) => {
-            const button = page.querySelector("#decrease-btn");
-            for (let i = 0; i < 10; i++)
-                button.click();
         }),
     ],
 });
