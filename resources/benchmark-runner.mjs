@@ -49,6 +49,23 @@ export function postMessageSent({ type }) {
     });
 }
 
+export function startSubscription({ type, callback }) {
+    const handleMessage = (e) => {
+        if (e.data.type !== type)
+            return;
+
+        callback?.(e);
+    };
+
+    const stopSubscription = () => {
+        window.removeEventListener("message", handleMessage);
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return { stopSubscription };
+}
+
 class Page {
     constructor(frame) {
         this._frame = frame;
@@ -519,16 +536,15 @@ export class BenchmarkRunner {
     }
 
     async _runRemoteSuite(suite) {
+        const { stopSubscription } = startSubscription({ type: "step-complete", callback: async (e) => {
+            if (this._client?.didRunTest)
+                await this._client.didRunTest(e.data.name, e.data.test);
+        } });
         this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config.name, params: JSON.stringify(params) }, "*");
         const response = await postMessageSent({ type: "suite-complete" });
+        stopSubscription();
 
         this._measuredValues.tests[suite.name] = response.result;
-
-        if (this._client?.didRunTest) {
-            for (let i = 0; i < suite.config?.steps; i++)
-                await this._client.didRunTest();
-
-        }
     }
 
     async _runSuite(suite) {
@@ -660,7 +676,7 @@ export class BenchmarkRunner {
         suiteResults.total += total;
 
         if (this._client?.didRunTest)
-            await this._client.didRunTest();
+            await this._client.didRunTest(suite, test);
     }
 
     async _finalize() {
