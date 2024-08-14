@@ -519,8 +519,7 @@ export class BenchmarkRunner {
     }
 
     async _runRemoteSuite(suite) {
-        const { waitBeforeSync, measurementMethod, warmupBeforeSync } = params;
-        this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config.name, waitBeforeSync, measurementMethod, warmupBeforeSync }, "*");
+        this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config.name, params: JSON.stringify(params) }, "*");
         const response = await postMessageSent({ type: "suite-complete" });
 
         this._measuredValues.tests[suite.name] = response.result;
