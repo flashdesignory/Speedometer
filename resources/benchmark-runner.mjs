@@ -544,7 +544,14 @@ export class BenchmarkRunner {
         const response = await postMessageSent({ type: "suite-complete" });
         stopSubscription();
 
-        this._measuredValues.tests[suite.name] = response.result;
+        const suiteResults = response.result;
+        if (params.measurePrepare) {
+            const prepareTime = this._measuredValues.tests?.[suite.name].prepare ?? 0;
+            suiteResults.prepare = prepareTime;
+            suiteResults.total += prepareTime;
+        }
+
+        this._measuredValues.tests[suite.name] = suiteResults;
     }
 
     async _runSuite(suite) {
@@ -576,12 +583,27 @@ export class BenchmarkRunner {
         const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
 
         performance.mark(suitePrepareStartLabel);
+        const prepareStartTime = performance.now();
 
         const response = await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame: this._page._frame, url: `${suite.url}` }), suite.prepare(this._page)]);
-        this._appId = response.find(value => value.type === "app-ready")?.appId;
 
+        const prepareEndTime = performance.now();
         performance.mark(suitePrepareEndLabel);
         performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+
+        this._appId = response.find(value => value.type === "app-ready")?.appId;
+
+        if (params.measurePrepare) {
+            const prepareTime = prepareEndTime - prepareStartTime;
+            this._recordPrepareMetric(suite, prepareTime);
+        }
+    }
+
+    _recordPrepareMetric(suite, prepareTime) {
+        const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
+        suiteResults.prepare = prepareTime;
+        suiteResults.total += prepareTime;
+        this._measuredValues.tests[suite.name] = suiteResults;
     }
 
     async _runTestAndRecordResults(suite, test) {
