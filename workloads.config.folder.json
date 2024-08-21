@@ -1,0 +1,16 @@
+{
+    "workloads": [
+        {
+            "name": "news-site-next",
+            "type": "static"
+        },
+        {
+            "name": "news-site-nuxt",
+            "type": "static"
+        },
+        {
+            "name": "todomvc-web-components",
+            "type": "static"
+        }
+    ]
+}

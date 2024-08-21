@@ -22,6 +22,7 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
+    settings.append(createUIForMeasurePrepare());
 
     content.append(document.createElement("hr"));
     content.append(settings);
@@ -70,6 +71,23 @@ function createUIForWarmupSuite() {
 
     let label = document.createElement("label");
     label.append(check, " ", span("Use Warmup Suite"));
+
+    return label;
+}
+
+function createUIForMeasurePrepare() {
+    let check = document.createElement("input");
+    check.type = "checkbox";
+    check.id = "measure-prepare";
+    check.checked = params.measurePrepare;
+
+    check.onchange = () => {
+        params.measurePrepare = check.checked;
+        updateURL();
+    };
+
+    let label = document.createElement("label");
+    label.append(check, " ", "Measure Prepare");
 
     return label;
 }
@@ -280,6 +298,11 @@ function updateURL() {
         else
             url.searchParams.delete(paramKey);
     }
+
+    if (params.measurePrepare !== defaultParams.measurePrepare)
+        url.searchParams.set("measurePrepare", params.measurePrepare);
+    else
+        url.searchParams.delete("measurePrepare");
 
     // Only push state if changed
     url.search = decodeURIComponent(url.search);

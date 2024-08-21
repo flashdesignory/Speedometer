@@ -25,6 +25,8 @@ class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // Emit metrics for the prepare phase.
+    measurePrepare = false;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -80,6 +82,9 @@ class Params {
 
         this.developerMode = searchParams.has("developerMode");
         searchParams.delete("developerMode");
+
+        this.measurePrepare = searchParams.has("measurePrepare");
+        searchParams.delete("measurePrepare");
 
         if (searchParams.has("useWarmupSuite")) {
             this.useWarmupSuite = true;
