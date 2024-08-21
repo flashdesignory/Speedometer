@@ -67,7 +67,7 @@ Suites.push({
         steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
     },
     async prepare(page) {
-        // await page.waitForElement("#navbar-dropdown-toggle");
+        await page.waitForElement("#navbar-dropdown-toggle");
     },
 });
 
@@ -82,7 +82,7 @@ Suites.push({
         steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
     },
     async prepare(page) {
-        // await page.waitForElement("#navbar-dropdown-toggle");
+        await page.waitForElement("#navbar-dropdown-toggle");
     },
 });
 
@@ -96,14 +96,18 @@ Suites.push({
         name: "Navigation", // used to get the correct BenchmarkSuite
         steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
     },
-    async prepare(page) {},
+    async prepare(page) {
+        // await page.waitForElement("#navbar-dropdown-toggle");
+    },
 });
 
 Suites.push({
     name: "NewsSite-Next-S3",
     url: "/workloads/news-site-next/",
     tags: ["newssite", "language", "compare"],
-    async prepare(page) {},
+    async prepare(page) {
+        await page.waitForElement("#navbar-dropdown-toggle");
+    },
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
             for (let i = 0; i < 25; i++) {
@@ -142,7 +146,9 @@ Suites.push({
     name: "NewsSite-Nuxt-S3",
     url: "/workloads/news-site-nuxt/",
     tags: ["newssite"],
-    async prepare(page) {},
+    async prepare(page) {
+        await page.waitForElement("#navbar-dropdown-toggle");
+    },
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
             for (let i = 0; i < 25; i++) {
@@ -181,7 +187,9 @@ Suites.push({
     name: "TodoMVC-WebComponents-S3",
     url: "/workloads/todomvc-web-components/",
     tags: ["todomvc", "webcomponents"],
-    async prepare(page) {},
+    async prepare(page) {
+        await page.waitForElement("todo-app");
+    },
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
