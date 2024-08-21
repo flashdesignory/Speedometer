@@ -98,6 +98,8 @@ Suites.push({
     },
     async prepare(page) {
         // await page.waitForElement("#navbar-dropdown-toggle");
+        const sleep = (ms) => new Promise(resolve => setTimeout(() => resolve(), ms));
+        await sleep(100);
     },
 });
 
