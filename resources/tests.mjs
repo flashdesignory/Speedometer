@@ -59,7 +59,7 @@ Suites.enable = function (names, tags) {
 Suites.push({
     name: "NewsSite-Next-External",
     url: "/workloads/news-site-next/",
-    tags: ["newssite", "language", "compare"],
+    tags: ["compare", "newssite", "language"],
     disabled: true,
     config: {
         remote: true,
@@ -74,7 +74,7 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Next-NoPostMessage",
     url: "/workloads/news-site-next/",
-    tags: ["newssite", "language", "compare"],
+    tags: ["compare", "newssite", "language"],
     disabled: true,
     config: {
         remote: false,
@@ -89,7 +89,7 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Next-Remote",
     url: `${window.location.protocol}//news-site-next-static.netlify.app`,
-    tags: ["newssite", "language", "compare"],
+    tags: ["compare", "newssite", "language"],
     disabled: true,
     config: {
         remote: true,
@@ -104,7 +104,7 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Next-S3",
     url: "/workloads/news-site-next/",
-    tags: ["newssite", "language", "compare"],
+    tags: ["compare", "newssite", "language"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
@@ -145,7 +145,7 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Nuxt-S3",
     url: "/workloads/news-site-nuxt/",
-    tags: ["newssite"],
+    tags: ["newssite", "language"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
