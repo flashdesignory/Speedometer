@@ -5,6 +5,9 @@ const RTL_LOCALES = ["ar", "he", "fa", "ps", "ur"];
 const DEFAULT_LANG = "en";
 const DEFAULT_DIR = "ltr";
 
+const DEFAULT_COMPLEXITY = "1";
+const MIN_SECTIONS = 1;
+
 const DataContext = createContext(null);
 
 export const DataContextProvider = ({ children }) => {
@@ -16,10 +19,37 @@ export const DataContextProvider = ({ children }) => {
     document.documentElement.setAttribute("dir", dir);
     document.documentElement.setAttribute("lang", lang);
 
+    const { content } = dataSource[lang];
+    const complexity = parseFloat(urlParams.get("complexity") ?? DEFAULT_COMPLEXITY);
+
+    const selected = Object.create(null);
+    Object.keys(content).forEach(key => {
+        const { sections } = content[key];
+
+        const numSections = Math.max(Math.ceil(sections.length * complexity), MIN_SECTIONS);
+
+        const selectedSections = [];
+        let index = 0;
+
+        for (let i = 0; i < numSections; i++) {
+            selectedSections.push({ ...sections[index] });
+            const numCopy = Math.floor(i / sections.length);
+            selectedSections[i].id = `${sections[index].id}-${numCopy}`;
+            selectedSections[i].name = `${sections[index].name}-${numCopy}`;
+            index = (index + 1) % sections.length;
+        }
+
+        selected[key] = {
+            ...content[key],
+            sections: selectedSections
+        };
+    });
+
     const value = {
         lang,
         dir,
         ...dataSource[lang],
+        content: selected
     };
 
     return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
