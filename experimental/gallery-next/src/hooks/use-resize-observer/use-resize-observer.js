@@ -11,18 +11,18 @@ export function useResizeObserver({ callback }) {
             resizeObserver.current.observe(element);
 
             return function () {
-                if (resizeObserver.current) {
+                if (resizeObserver.current)
                     resizeObserver.current.unobserve(element);
-                }
+
             };
         },
         [callback]
     );
 
     function disconnect() {
-        if (resizeObserver.current) {
+        if (resizeObserver.current)
             resizeObserver.current.disconnect();
-        }
+
     }
 
     return { elementRef, disconnect };
