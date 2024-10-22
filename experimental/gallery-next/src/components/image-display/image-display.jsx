@@ -10,12 +10,11 @@ export default function ImageDisplay({ data, width, height, containerStyles = {}
         maxWidth: `${maxWidth}px`,
         maxHeight: `${maxHeight}px`,
         aspectRatio,
-        ...containerStyles
+        ...containerStyles,
     };
 
-    if (maxWidth === 0 || maxHeight === 0) {
+    if (maxWidth === 0 || maxHeight === 0)
         return null;
-    }
 
     return (
         <div className={styles["display-image-container"]} style={customStyles}>
