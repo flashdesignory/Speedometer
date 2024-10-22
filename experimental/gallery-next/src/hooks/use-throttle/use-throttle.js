@@ -1,8 +1,4 @@
-export function useThrottle(
-    fn,
-    delay,
-    options = { leading: true, trailing: true }
-) {
+export function useThrottle(fn, delay, options = { leading: true, trailing: true }) {
     const { leading, trailing } = options;
     let last = 0;
     let timeout;
@@ -11,9 +7,8 @@ export function useThrottle(
         const now = new Date().getTime();
         clearTimeout(timeout);
 
-        if (!leading && last === 0) {
+        if (!leading && last === 0)
             last = now;
-        }
 
         if (now - last < delay) {
             if (trailing) {

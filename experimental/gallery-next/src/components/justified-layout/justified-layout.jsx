@@ -5,10 +5,7 @@ import styles from "./justified-layout.module.css";
 import { useResizeObserver } from "@/hooks/use-resize-observer/use-resize-observer";
 import { useThrottle } from "@/hooks/use-throttle/use-throttle";
 
-export default function JustifiedLayout({
-    data = { items: [] },
-    imageMaxHeight = 300,
-}) {
+export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight = 300 }) {
     const [sizes, setSizes] = useState(
         data.items.map(() => ({
             width: 0,
@@ -22,9 +19,8 @@ export default function JustifiedLayout({
 
     function handleOnResize(entries) {
         for (let entry of entries) {
-            if (containerWidth === entry.contentRect.width) {
+            if (containerWidth === entry.contentRect.width)
                 return;
-            }
 
             disconnect();
             setContainerWidth(entry.contentRect.width);
@@ -38,18 +34,12 @@ export default function JustifiedLayout({
         const newSizes = data.items.map((entry, index) => {
             const item = { ...entry.image };
             row.push(item);
-            currentWidth += Math.ceil(
-                (imageMaxHeight / item.height) * item.width
-            );
+            currentWidth += Math.ceil((imageMaxHeight / item.height) * item.width);
 
             if (currentWidth >= containerWidth || index === sizes.length - 1) {
-                const height = Math.floor(
-                    (containerWidth / currentWidth) * imageMaxHeight
-                );
+                const height = Math.floor((containerWidth / currentWidth) * imageMaxHeight);
                 row.forEach((image) => {
-                    const width = Math.floor(
-                        (height / image.height) * image.width
-                    );
+                    const width = Math.floor((height / image.height) * image.width);
                     image.width = width;
                     image.height = height;
                 });
@@ -65,14 +55,9 @@ export default function JustifiedLayout({
     return (
         <div className={styles["justified-layout-container"]} ref={elementRef}>
             <div className={styles["justified-layout-content"]}>
-                {data.items.map((item, index) => (
-                    <ImageDisplay
-                        key={item.id}
-                        data={item}
-                        width={sizes[index].width}
-                        height={sizes[index].height}
-                    />
-                ))}
+                {data.items.map((item, index) =>
+                    <ImageDisplay key={item.id} data={item} width={sizes[index].width} height={sizes[index].height} />
+                )}
             </div>
         </div>
     );
