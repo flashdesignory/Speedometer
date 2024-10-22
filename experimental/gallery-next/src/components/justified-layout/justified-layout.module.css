@@ -1,0 +1,20 @@
+.justified-layout-container {
+    display: flex;
+    position: relative;
+    width: 100%;
+    padding: var(--content-spacing-medium);
+    background-color: var(--neutrals-gray-128);
+}
+
+.justified-layout-content {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+    .justified-layout-container {
+        padding: var(--content-spacing-small);
+    }
+}
