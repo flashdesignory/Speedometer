@@ -18,4 +18,7 @@ body {
     --content-spacing-medium: 10px;
     --content-spacing-large: 15px;
     --content-spacing-xlarge: 20px;
+
+    /* dimensions */
+    --nav-height: 46px;
 }
