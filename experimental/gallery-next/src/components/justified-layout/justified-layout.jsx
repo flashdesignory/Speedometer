@@ -5,7 +5,7 @@ import styles from "./justified-layout.module.css";
 import { useResizeObserver } from "@/hooks/use-resize-observer/use-resize-observer";
 import { useThrottle } from "@/hooks/use-throttle/use-throttle";
 
-export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight = 300 }) {
+export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight = 480 }) {
     const [sizes, setSizes] = useState(
         data.items.map(() => ({
             width: 0,
