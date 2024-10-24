@@ -66,7 +66,7 @@ export default function MasonryLayout({ data = { items: [] } }) {
 
         const COLUMNS_LOOKUP = {
             __proto__: null,
-            859: 3,
+            721: 3,
             1111: 4,
             1363: 5,
         };
