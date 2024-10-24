@@ -16,8 +16,22 @@ export default function App() {
 
             <Router>
                 <Routes>
-                    <Route path="/masonry" element={<Page id="masonry"><MasonryLayout data={data} /></Page>} />
-                    <Route path="/" element={<Page id="justified"><JustifiedLayout data={data} /></Page>} />
+                    <Route
+                        path="/masonry"
+                        element={
+                            <Page id="masonry">
+                                <MasonryLayout data={data} />
+                            </Page>
+                        }
+                    />
+                    <Route
+                        path="/"
+                        element={
+                            <Page id="justified">
+                                <JustifiedLayout data={data} />
+                            </Page>
+                        }
+                    />
                 </Routes>
             </Router>
         </>
