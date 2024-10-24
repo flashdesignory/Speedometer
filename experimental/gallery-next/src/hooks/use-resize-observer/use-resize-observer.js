@@ -13,7 +13,6 @@ export function useResizeObserver({ callback }) {
             return function () {
                 if (resizeObserver.current)
                     resizeObserver.current.unobserve(element);
-
             };
         },
         [callback]
@@ -22,7 +21,6 @@ export function useResizeObserver({ callback }) {
     function disconnect() {
         if (resizeObserver.current)
             resizeObserver.current.disconnect();
-
     }
 
     return { elementRef, disconnect };
