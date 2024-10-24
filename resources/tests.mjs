@@ -131,6 +131,8 @@ Suites.push({
     },
     tests: [
         new BenchmarkTestStep("Navigate-to-masonry", (page) => {
+            page.querySelector("#__next").setWidth("400px");
+            page.layout();
             page.querySelector("#nav-link-masonry").click();
             page.layout();
         }),
@@ -139,6 +141,8 @@ Suites.push({
             page.layout();
         }),
         new BenchmarkTestStep("Navigate-back-to-masonry", (page) => {
+            page.querySelector("#__next").setWidth("100%");
+            page.layout();
             page.querySelector("#nav-link-masonry").click();
             page.layout();
         }),
