@@ -5,12 +5,9 @@ import styles from "./masonry-layout.module.css";
 import { useResizeObserver } from "@/hooks/use-resize-observer/use-resize-observer";
 import { useThrottle } from "@/hooks/use-throttle/use-throttle";
 
-export const getNewHeight = (width, height, targetWidth) =>
-    (height / width) * targetWidth;
+export const getNewHeight = (width, height, targetWidth) => (height / width) * targetWidth;
 
-export default function MasonryLayout({
-    data = { items: [] }
-}) {
+export default function MasonryLayout({ data = { items: [] } }) {
     const numColumns = useRef(3);
     function rebuild() {
         const columns = [];
@@ -31,7 +28,7 @@ export default function MasonryLayout({
 
     const customStyles = {
         width: "100%",
-        height: "auto"
+        height: "auto",
     };
 
     const [sizes, setSizes] = useState(
@@ -69,18 +66,17 @@ export default function MasonryLayout({
 
         const COLUMNS_LOOKUP = {
             __proto__: null,
-            "859": 3,
-            "1111": 4,
-            "1363": 5,
+            859: 3,
+            1111: 4,
+            1363: 5,
         };
 
         let selectedKey = 0;
-        Object.keys(COLUMNS_LOOKUP).forEach(num => {
+        Object.keys(COLUMNS_LOOKUP).forEach((num) => {
             // console.log(num, num / containerWidth)
             const val = num / containerWidth;
             if (val < 1)
                 selectedKey = Math.max(selectedKey, num);
-
         });
 
         numColumns.current = COLUMNS_LOOKUP[selectedKey] ?? 2;
@@ -96,19 +92,23 @@ export default function MasonryLayout({
             return item;
         });
 
-        setSizes(newSizes.reduce((accumulator, item) => {
-            accumulator[item.id] = { width: item.width, height: item.height };
-            return accumulator;
-        }, {}));
+        setSizes(
+            newSizes.reduce((accumulator, item) => {
+                accumulator[item.id] = { width: item.width, height: item.height };
+                return accumulator;
+            }, {})
+        );
     }
 
     return (
-        <div className={styles["masonry-container"]}ref={elementRef}>
+        <div className={styles["masonry-container"]} ref={elementRef}>
             <div className={styles["masonry-content"]}>
                 {columns.map((column, index) => {
                     return (
                         <div key={`masonry-column-${index}`} className={styles["masonry-column"]}>
-                            {column.map((item) => <ImageDisplay key={item.id} data={item} width={sizes[item.id].width} height={sizes[item.id].height} containerStyles={customStyles}/>)}
+                            {column.map((item) =>
+                                <ImageDisplay key={item.id} data={item} width={sizes[item.id].width} height={sizes[item.id].height} containerStyles={customStyles} />
+                            )}
                         </div>
                     );
                 })}

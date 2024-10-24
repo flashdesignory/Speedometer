@@ -19,7 +19,7 @@
     bottom: -2px;
     width: calc(100% - (var(--content-spacing-xlarge) * 2));
     margin: auto;
-    border-bottom: 1px solid transparent
+    border-bottom: 1px solid transparent;
 }
 
 .page-navigation-row {

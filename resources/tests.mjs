@@ -122,6 +122,34 @@ Suites.push({
 });
 
 Suites.push({
+    name: "Gallery-Next",
+    url: "experimental/gallery-next/dist/index.html",
+    tags: ["gallery"],
+    disabled: true,
+    async prepare(page) {
+        await page.waitForElement("#nav-link-masonry");
+    },
+    tests: [
+        new BenchmarkTestStep("Navigate-to-masonry", (page) => {
+            page.querySelector("#nav-link-masonry").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("Navigate-to-Justified", (page) => {
+            page.querySelector("#nav-link-justified").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("Navigate-back-to-masonry", (page) => {
+            page.querySelector("#nav-link-masonry").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("Navigate-back-to-Justified", (page) => {
+            page.querySelector("#nav-link-justified").click();
+            page.layout();
+        }),
+    ],
+});
+
+Suites.push({
     name: "TodoMVC-JavaScript-ES5",
     url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
     tags: ["todomvc"],
