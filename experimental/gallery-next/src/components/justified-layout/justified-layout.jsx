@@ -1,11 +1,19 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import ImageDisplay from "../image-display/image-display";
 import styles from "./justified-layout.module.css";
 
 import { useResizeObserver } from "@/hooks/use-resize-observer/use-resize-observer";
 import { useThrottle } from "@/hooks/use-throttle/use-throttle";
+import Modal from "@/partials/modal/modal";
 
 export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight = 480 }) {
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    function closeModal() {
+        setSelectedImage(null);
+    }
+
     const [sizes, setSizes] = useState(
         data.items.map(() => ({
             width: 0,
@@ -52,13 +60,20 @@ export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight =
         setSizes(newSizes);
     }
 
+    function handleOnClick(data) {
+        setSelectedImage(data);
+    }
+
     return (
-        <div className={styles["justified-layout-container"]} ref={elementRef}>
-            <div className={styles["justified-layout-content"]}>
-                {data.items.map((item, index) =>
-                    <ImageDisplay key={item.id} data={item} width={sizes[index].width} height={sizes[index].height} />
-                )}
+        <>
+            <div className={styles["justified-layout-container"]} ref={elementRef}>
+                <div className={styles["justified-layout-content"]}>
+                    {data.items.map((item, index) =>
+                        <ImageDisplay key={item.id} data={item} width={sizes[index].width} height={sizes[index].height} onClick={handleOnClick}/>
+                    )}
+                </div>
             </div>
-        </div>
+            {selectedImage ? createPortal(<Modal onClose={closeModal} data={selectedImage} />, document.getElementById("modal-container")) : null}
+        </>
     );
 }

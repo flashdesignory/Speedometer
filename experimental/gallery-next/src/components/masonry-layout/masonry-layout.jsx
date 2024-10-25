@@ -1,13 +1,21 @@
 import { useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import ImageDisplay from "../image-display/image-display";
 import styles from "./masonry-layout.module.css";
 
 import { useResizeObserver } from "@/hooks/use-resize-observer/use-resize-observer";
 import { useThrottle } from "@/hooks/use-throttle/use-throttle";
+import Modal from "@/partials/modal/modal";
 
 export const getNewHeight = (width, height, targetWidth) => (height / width) * targetWidth;
 
 export default function MasonryLayout({ data = { items: [] } }) {
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    function closeModal() {
+        setSelectedImage(null);
+    }
+
     const numColumns = useRef(3);
     function rebuild() {
         const columns = [];
@@ -100,19 +108,26 @@ export default function MasonryLayout({ data = { items: [] } }) {
         );
     }
 
+    function handleOnClick(data) {
+        setSelectedImage(data);
+    }
+
     return (
-        <div className={styles["masonry-container"]} ref={elementRef}>
-            <div className={styles["masonry-content"]}>
-                {columns.map((column, index) => {
-                    return (
-                        <div key={`masonry-column-${index}`} className={styles["masonry-column"]}>
-                            {column.map((item) =>
-                                <ImageDisplay key={item.id} data={item} width={sizes[item.id].width} height={sizes[item.id].height} containerStyles={customStyles} />
-                            )}
-                        </div>
-                    );
-                })}
+        <>
+            <div className={styles["masonry-container"]} ref={elementRef}>
+                <div className={styles["masonry-content"]}>
+                    {columns.map((column, index) => {
+                        return (
+                            <div key={`masonry-column-${index}`} className={styles["masonry-column"]}>
+                                {column.map((item) =>
+                                    <ImageDisplay key={item.id} data={item} width={sizes[item.id].width} height={sizes[item.id].height} containerStyles={customStyles} onClick={handleOnClick}/>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
-        </div>
+            {selectedImage ? createPortal(<Modal onClose={closeModal} data={selectedImage} />, document.getElementById("modal-container")) : null}
+        </>
     );
 }

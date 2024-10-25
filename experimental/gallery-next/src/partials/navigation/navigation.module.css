@@ -46,8 +46,8 @@
 }
 
 .page-navigation-button {
-    width: 32px;
-    height: 32px;
+    width: var(--button-size-medium);
+    height: var(--button-size-medium);
     padding: 4px;
     border-radius: 4px;
 

@@ -18,7 +18,14 @@ body {
     --content-spacing-medium: 10px;
     --content-spacing-large: 15px;
     --content-spacing-xlarge: 20px;
+    --content-spacing-xxlarge: 40px;
 
     /* dimensions */
     --nav-height: 46px;
+    --icon-size-medium: 28px;
+    --button-size-medium: 32px;
+
+    /* z-index */
+    --index-modal-close: 1001;
+    --index-modal: 1000;
 }
