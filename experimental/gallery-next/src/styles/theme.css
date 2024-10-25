@@ -1,0 +1,11 @@
+body {
+    /* theme */
+    --theme-modal-background: var(--opacity-black-50);
+    --theme-dialog-background: var(--neutrals-white);
+    --theme-text-dark: var(--neutrals-black);
+    --theme-medium-border: var(--border-width-medium) solid transparent;
+    --theme-icon-fill-lighter: var(--neutrals-white);
+    --theme-icon-fill-light: var(--utils-offwhite);
+    --theme-icon-fill-medium: var(--utils-gray-light);
+    --theme-icon-fill-dark: var(--neutrals-black);
+}
