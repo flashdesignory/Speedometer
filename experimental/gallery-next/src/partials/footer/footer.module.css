@@ -1,10 +1,10 @@
 .footer {
     display: flex;
     justify-content: center;
-    font-size: 12px;
+    font-size: var(--font-size-small);
     font-weight: bold;
-    font-family: "Courier New", Courier, monospace;
-    background-color: black;
-    color: whitesmoke;
-    padding: 16px;
+    font-family: var(--font-family-default);
+    background-color: var(--neutrals-black);
+    color: var(--utils-offwhite);
+    padding: var(--content-spacing-large);
 }

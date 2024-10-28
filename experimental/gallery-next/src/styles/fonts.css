@@ -1,4 +1,12 @@
 body {
     /* fonts */
     --font-family-default: "Courier New", Courier, monospace;
+
+    /* font sizes */
+    --font-size-small: 12px;
+    --font-size-medium: 16px;
+    --font-size-large: 20px;
+    --font-size-xlarge: 24px;
+    --font-size-xxlarge: 32px;
+    --font-size-xxxlarge: 40px;
 }
