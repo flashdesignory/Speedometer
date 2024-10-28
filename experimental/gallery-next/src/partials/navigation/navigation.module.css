@@ -8,8 +8,8 @@
     position: sticky;
     top: 0;
     background-color: var(--neutrals-gray-102);
-    z-index: 100;
-    color: white;
+    color: var(--neutrals-white);
+    z-index: var(--index-nav);
 }
 
 .page-navigation::after {
@@ -42,7 +42,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: var(--content-spacing-medium);
 }
 
 .page-navigation-button {

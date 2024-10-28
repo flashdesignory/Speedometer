@@ -1,10 +1,10 @@
 .header {
     display: flex;
     justify-content: center;
-    font-size: 26px;
+    font-size: var(--font-size-xlarge);
     font-weight: bold;
     font-family: var(--font-family-default);
-    background-color: black;
-    color: whitesmoke;
-    padding: 16px;
+    background-color: var(--neutrals-black);
+    color: var(--utils-offwhite);
+    padding: var(--content-spacing-large);
 }

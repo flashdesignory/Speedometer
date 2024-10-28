@@ -28,4 +28,5 @@ body {
     /* z-index */
     --index-modal-close: 1001;
     --index-modal: 1000;
+    --index-nav: 100;
 }
