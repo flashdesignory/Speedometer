@@ -18,6 +18,62 @@ export class TestRunner {
         this.#frame = frame;
     }
 
+    _runWarmup() {
+        if (this.#params.warmupBeforeSync) {
+            performance.mark("warmup-start");
+            const startTime = performance.now();
+            // Infinite loop for the specified ms.
+            while (performance.now() - startTime < this.#params.warmupBeforeSync)
+                continue;
+            performance.mark("warmup-end");
+        }
+    }
+
+    _measureSyncTime(syncStartLabel, syncEndLabel) {
+        performance.mark(syncStartLabel);
+        const syncStartTime = performance.now();
+        this.#test.run(this.#page);
+        const syncEndTime = performance.now();
+        performance.mark(syncEndLabel);
+
+        const syncTime = syncEndTime - syncStartTime;
+        return syncTime;
+    }
+
+    _initAsyncTime(asyncStartLabel) {
+        performance.mark(asyncStartLabel);
+
+        const asyncStartTime = performance.now();
+        return asyncStartTime;
+    }
+
+    _measureAsyncTime(asyncStartTime, asyncEndLabel) {
+        const asyncEndTime = performance.now();
+        performance.mark(asyncEndLabel);
+
+        const asyncTime = asyncEndTime - asyncStartTime;
+        return asyncTime;
+    }
+
+    _measureTestPerformance(syncStartLabel, syncEndLabel, asyncStartLabel, asyncEndLabel) {
+        const suiteName = this.#suite.name;
+        const testName = this.#test.name;
+
+        if (this.#params.warmupBeforeSync)
+            performance.measure("warmup", "warmup-start", "warmup-end");
+        performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
+        performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
+    }
+
+    _forceLayout() {
+        const bodyReference = this.#frame ? this.#frame.contentDocument.body : document.body;
+        const windowReference = this.#frame ? this.#frame.contentWindow : window;
+        // Some browsers don't immediately update the layout for paint.
+        // Force the layout here to ensure we're measuring the layout time.
+        const height = bodyReference.getBoundingClientRect().height;
+        windowReference._unusedHeightValue = height; // Prevent dead code elimination.
+    }
+
     async runTest() {
         // Prepare all mark labels outside the measuring loop.
         const suiteName = this.#suite.name;
@@ -32,42 +88,15 @@ export class TestRunner {
         let asyncTime;
 
         const runSync = () => {
-            if (this.#params.warmupBeforeSync) {
-                performance.mark("warmup-start");
-                const startTime = performance.now();
-                // Infinite loop for the specified ms.
-                while (performance.now() - startTime < this.#params.warmupBeforeSync)
-                    continue;
-                performance.mark("warmup-end");
-            }
-            performance.mark(syncStartLabel);
-            const syncStartTime = performance.now();
-            this.#test.run(this.#page);
-            const syncEndTime = performance.now();
-            performance.mark(syncEndLabel);
-
-            syncTime = syncEndTime - syncStartTime;
-
-            performance.mark(asyncStartLabel);
-            asyncStartTime = performance.now();
+            this._runWarmup();
+            syncTime = this._measureSyncTime(syncStartLabel, syncEndLabel);
+            asyncStartTime = this._initAsyncTime(asyncStartLabel);
         };
+
         const measureAsync = () => {
-            const bodyReference = this.#frame ? this.#frame.contentDocument.body : document.body;
-            const windowReference = this.#frame ? this.#frame.contentWindow : window;
-            // Some browsers don't immediately update the layout for paint.
-            // Force the layout here to ensure we're measuring the layout time.
-            const height = bodyReference.getBoundingClientRect().height;
-            windowReference._unusedHeightValue = height; // Prevent dead code elimination.
-
-            const asyncEndTime = performance.now();
-            performance.mark(asyncEndLabel);
-
-            asyncTime = asyncEndTime - asyncStartTime;
-
-            if (this.#params.warmupBeforeSync)
-                performance.measure("warmup", "warmup-start", "warmup-end");
-            performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
-            performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
+            this._forceLayout();
+            asyncTime = this._measureAsyncTime(asyncStartTime, asyncEndLabel);
+            this._measureTestPerformance(syncStartLabel, syncEndLabel, asyncStartLabel, asyncEndLabel);
         };
 
         const report = () => this.#callback(this.#test, syncTime, asyncTime);
