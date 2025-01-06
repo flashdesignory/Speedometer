@@ -7,7 +7,7 @@ import Navigation from "@/partials/navigation/navigation";
 
 export default function Layout({ children }) {
     return (
-        <div className={styles.layout}>
+        <div className={styles.layout} id="layout">
             <Header />
             <Navigation />
             <Main>{children}</Main>
