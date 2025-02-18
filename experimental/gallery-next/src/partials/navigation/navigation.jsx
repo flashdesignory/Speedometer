@@ -17,7 +17,7 @@ export default function Navigation({ callback }) {
                     <NavLink to="/masonry" id="nav-link-masonry" className={({ isActive }) => classNames(styles["page-navigation-button"], { [styles.active]: isActive })}>
                         <MasonryIcon />
                     </NavLink>
-                    <Toggle icon={OrientationIcon} callback={callback}/>
+                    <Toggle id="orientation-toggle" icon={OrientationIcon} callback={callback}/>
                 </div>
             </div>
         </nav>

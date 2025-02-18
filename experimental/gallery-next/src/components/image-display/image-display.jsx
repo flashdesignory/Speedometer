@@ -21,8 +21,8 @@ export default function ImageDisplay({ data, width, height, containerStyles = {}
         return null;
 
     return (
-        <div className={styles["display-image-container"]} style={customStyles} id={data.id}>
-            <div className={styles["display-image-content"]} onClick={handleOnClick} >
+        <div className={styles["display-image-container"]} style={customStyles}>
+            <div className={styles["display-image-content"]} id={data.id} onClick={handleOnClick} >
                 <ImageContainer {...data.image} />
             </div>
         </div>

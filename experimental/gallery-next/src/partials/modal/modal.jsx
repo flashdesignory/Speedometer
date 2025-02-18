@@ -9,7 +9,7 @@ export default function Modal({ onClose, data }) {
     return (
         <div id="preview" className={classNames(styles.modal, styles.open)}>
             <div className={styles["modal-content"]}>
-                <button id="close-modal-link" className={styles["modal-close-button"]} onClick={onClose} title="Close Button">
+                <button id="close-modal-button" className={styles["modal-close-button"]} onClick={onClose} title="Close Button">
                     <div className={classNames(styles["modal-close-button-icon"], "animated-icon", "close-icon", "hover")} title="Close Icon">
                         <span className="animated-icon-inner">
                             <span></span>
