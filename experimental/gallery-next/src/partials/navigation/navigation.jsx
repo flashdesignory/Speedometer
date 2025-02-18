@@ -3,8 +3,10 @@ import classNames from "classnames";
 import JustifiedIcon from "@/assets/justified-icon";
 import MasonryIcon from "@/assets/masonry-icon";
 import styles from "./navigation.module.css";
+import Toggle from "../toggle/toggle";
+import OrientationIcon from "@/assets/orientation-icon";
 
-export default function Navigation() {
+export default function Navigation({ callback }) {
     return (
         <nav className={styles["page-navigation"]} aria-label="main menu">
             <div className={styles["page-navigation-row"]}>
@@ -15,6 +17,7 @@ export default function Navigation() {
                     <NavLink to="/masonry" id="nav-link-masonry" className={({ isActive }) => classNames(styles["page-navigation-button"], { [styles.active]: isActive })}>
                         <MasonryIcon />
                     </NavLink>
+                    <Toggle icon={OrientationIcon} callback={callback}/>
                 </div>
             </div>
         </nav>
