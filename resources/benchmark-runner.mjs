@@ -145,10 +145,6 @@ class PageElement {
         this.#node.focus();
     }
 
-    setWidth(value) {
-        this.#node.style.width = value;
-    }
-
     getElementByMethod(name) {
         return new PageElement(this.#node[name]());
     }
