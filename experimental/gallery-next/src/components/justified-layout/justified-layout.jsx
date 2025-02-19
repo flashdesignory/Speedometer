@@ -11,12 +11,7 @@ export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight =
     const [selectedImage, setSelectedImage] = useState(null);
 
     useLayoutEffect(() => {
-        const galleryEvent = new CustomEvent("gallery-ready", {
-            detail: {
-                id: "justified"
-            }
-        });
-        window.dispatchEvent(galleryEvent);
+        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "justified" } }));
     }, []);
 
     function closeModal() {

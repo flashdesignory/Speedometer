@@ -13,12 +13,7 @@ export default function MasonryLayout({ data = { items: [] } }) {
     const [selectedImage, setSelectedImage] = useState(null);
 
     useLayoutEffect(() => {
-        const galleryEvent = new CustomEvent("gallery-ready", {
-            detail: {
-                id: "masonry"
-            }
-        });
-        window.dispatchEvent(galleryEvent);
+        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "masonry" } }));
     }, []);
 
     function closeModal() {

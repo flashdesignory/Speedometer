@@ -8,12 +8,7 @@ export default function Modal({ onClose, data }) {
     const { aspectRatio } = useSize({ width: data.image.width, height: data.image.height });
 
     useLayoutEffect(() => {
-        const modalEvent = new CustomEvent("modal-ready", {
-            detail: {
-                id: data.id
-            }
-        });
-        window.dispatchEvent(modalEvent);
+        window.dispatchEvent(new CustomEvent("modal-ready", { detail: { id: data.id } }));
     }, []);
 
     return (
@@ -27,9 +22,9 @@ export default function Modal({ onClose, data }) {
                         </span>
                     </div>
                 </button>
-                <header className={styles["modal-header"]}>{ data.image.alt }</header>
+                <header className={styles["modal-header"]}>{data.image.alt}</header>
                 <section className={styles["modal-body"]}>
-                    <div style={{ aspectRatio, width: "100%" }} >
+                    <div style={{ aspectRatio, width: "100%" }}>
                         <ImageContainer {...data.image} />
                     </div>
                 </section>
