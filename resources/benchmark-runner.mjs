@@ -116,6 +116,28 @@ class Page {
         return this._wrapElement(this._frame.contentWindow[functionName]());
     }
 
+    waitForEvent(eventName, element = this._frame.contentWindow) {
+        return new Promise((resolve) => {
+            const handler = ({ detail }) => {
+                element.removeEventListener(eventName, handler);
+                resolve(detail);
+            };
+            element.addEventListener(eventName, handler);
+        });
+    }
+
+    waitForEventWithId(eventName, id, element = this._frame.contentWindow) {
+        return new Promise((resolve) => {
+            const handler = ({ detail }) => {
+                if (detail.id === id) {
+                    element.removeEventListener(eventName, handler);
+                    resolve(detail);
+                }
+            };
+            element.addEventListener(eventName, handler);
+        });
+    }
+
     _wrapElement(element) {
         return new PageElement(element);
     }

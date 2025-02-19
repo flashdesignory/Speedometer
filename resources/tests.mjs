@@ -147,7 +147,6 @@ Suites.push({
             imageButton.click();
             const closeButton = await page.waitForElement("#close-modal-button");
             closeButton.click();
-            page.layout();
         }),
         new BenchmarkTestStep("JustifiedAndShowImage", async (page) => {
             const navButton = await page.waitForElement("#nav-link-justified");
@@ -156,6 +155,43 @@ Suites.push({
             imageButton.click();
             const closeButton = await page.waitForElement("#close-modal-button");
             closeButton.click();
+        }),
+    ],
+});
+
+Suites.push({
+    name: "Gallery-Next-2",
+    url: "experimental/gallery-next/dist/index.html",
+    tags: ["gallery"],
+    disabled: true,
+    async prepare(page) {
+        await page.waitForElement("#nav-link-masonry");
+    },
+    type: "async",
+    tests: [
+        new BenchmarkTestStep("ToggleAndShowImage", async (page) => {
+            const toggleButton = page.querySelector("#orientation-toggle");
+            toggleButton.click();
+            toggleButton.click();
+            page.querySelector("#justified-unsplash-image-01").click();
+            await page.waitForEvent("modal-ready");
+            page.querySelector("#close-modal-button").click();
+        }),
+        new BenchmarkTestStep("MasonryAndShowImage", async (page) => {
+            const imageId = "masonry-unsplash-image-02";
+            page.querySelector("#nav-link-masonry").click();
+            await page.waitForEventWithId("image-ready", imageId);
+            page.querySelector(`#${imageId}`).click();
+            await page.waitForEvent("modal-ready");
+            page.querySelector("#close-modal-button").click();
+        }),
+        new BenchmarkTestStep("JustifiedAndShowImage", async (page) => {
+            const imageId = "justified-unsplash-image-03";
+            page.querySelector("#nav-link-justified").click();
+            await page.waitForEventWithId("image-ready", imageId);
+            page.querySelector(`#${imageId}`).click();
+            await page.waitForEvent("modal-ready");
+            page.querySelector("#close-modal-button").click();
         }),
     ],
 });

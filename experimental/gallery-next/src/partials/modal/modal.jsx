@@ -2,9 +2,19 @@ import classNames from "classnames";
 import ImageContainer from "@/components/image-container/image-container";
 import { useSize } from "@/hooks/use-size/use-size";
 import styles from "./modal.module.css";
+import { useLayoutEffect } from "react";
 
 export default function Modal({ onClose, data }) {
     const { aspectRatio } = useSize({ width: data.image.width, height: data.image.height });
+
+    useLayoutEffect(() => {
+        const modalEvent = new CustomEvent("modal-ready", {
+            detail: {
+                id: data.id
+            }
+        });
+        window.dispatchEvent(modalEvent);
+    }, []);
 
     return (
         <div id="preview" className={classNames(styles.modal, styles.open)}>

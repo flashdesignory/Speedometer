@@ -23,7 +23,7 @@ export default function ImageDisplay({ id, data, width, height, containerStyles 
     return (
         <div className={styles["display-image-container"]} style={customStyles}>
             <div className={styles["display-image-content"]} id={id} onClick={handleOnClick} >
-                <ImageContainer {...data.image} />
+                <ImageContainer id={id} {...data.image} />
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import ImageDisplay from "../image-display/image-display";
 import styles from "./justified-layout.module.css";
@@ -9,6 +9,15 @@ import Modal from "@/partials/modal/modal";
 
 export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight = 480 }) {
     const [selectedImage, setSelectedImage] = useState(null);
+
+    useLayoutEffect(() => {
+        const galleryEvent = new CustomEvent("gallery-ready", {
+            detail: {
+                id: "justified"
+            }
+        });
+        window.dispatchEvent(galleryEvent);
+    }, []);
 
     function closeModal() {
         setSelectedImage(null);

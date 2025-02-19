@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import ImageDisplay from "../image-display/image-display";
 import styles from "./masonry-layout.module.css";
@@ -11,6 +11,15 @@ export const getNewHeight = (width, height, targetWidth) => (height / width) * t
 
 export default function MasonryLayout({ data = { items: [] } }) {
     const [selectedImage, setSelectedImage] = useState(null);
+
+    useLayoutEffect(() => {
+        const galleryEvent = new CustomEvent("gallery-ready", {
+            detail: {
+                id: "masonry"
+            }
+        });
+        window.dispatchEvent(galleryEvent);
+    }, []);
 
     function closeModal() {
         setSelectedImage(null);
