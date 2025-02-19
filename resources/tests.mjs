@@ -131,23 +131,27 @@ Suites.push({
     },
     type: "async",
     tests: [
-        new BenchmarkTestStep("TestStep-1", async (page) => {
+        new BenchmarkTestStep("ToggleAndShowImage", async (page) => {
+            const toggleButton = await page.waitForElement("#orientation-toggle");
+            toggleButton.click();
+            toggleButton.click();
             const imageButton = await page.waitForElement("#justified-unsplash-image-01");
             imageButton.click();
             const closeButton = await page.waitForElement("#close-modal-button");
             closeButton.click();
         }),
-        new BenchmarkTestStep("TestStep-2", async (page) => {
-            page.querySelector("#nav-link-masonry").click();
+        new BenchmarkTestStep("MasonryAndShowImage", async (page) => {
+            const navButton = await page.waitForElement("#nav-link-masonry");
+            navButton.click();
             const imageButton = await page.waitForElement("#masonry-unsplash-image-02");
             imageButton.click();
             const closeButton = await page.waitForElement("#close-modal-button");
             closeButton.click();
             page.layout();
         }),
-        new BenchmarkTestStep("TestStep-3", async (page) => {
-            page.querySelector("#nav-link-justified").click();
-            page.querySelector("#orientation-toggle").click();
+        new BenchmarkTestStep("JustifiedAndShowImage", async (page) => {
+            const navButton = await page.waitForElement("#nav-link-justified");
+            navButton.click();
             const imageButton = await page.waitForElement("#justified-unsplash-image-03");
             imageButton.click();
             const closeButton = await page.waitForElement("#close-modal-button");
