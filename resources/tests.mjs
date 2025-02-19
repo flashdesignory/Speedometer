@@ -130,7 +130,7 @@ Suites.push({
         await page.waitForElement("#nav-link-masonry");
     },
     tests: [
-        new BenchmarkTestStep("Navigate-to-masonry", (page) => {
+        /* new BenchmarkTestStep("Navigate-to-masonry", (page) => {
             page.querySelector("#layout").setWidth("400px");
             page.layout();
             page.querySelector("#nav-link-masonry").click();
@@ -149,6 +149,18 @@ Suites.push({
         new BenchmarkTestStep("Navigate-back-to-Justified", (page) => {
             page.querySelector("#nav-link-justified").click();
             page.layout();
+        }), */
+        new BenchmarkTestStep("Navigate-to-masonry", (page) => {
+            page.querySelector("#unsplash-image-01").click();
+            // page.querySelector("close-modal-button").click();
+        }),
+        new BenchmarkTestStep("Navigate-to-masonry2", (page) => {
+            page.querySelector("#unsplash-image-02").click();
+            // page.querySelector("close-modal-button").click();
+        }),
+        new BenchmarkTestStep("Navigate-to-masonry3", (page) => {
+            page.querySelector("#unsplash-image-03").click();
+            // page.querySelector("close-modal-button").click();
         }),
     ],
 });
