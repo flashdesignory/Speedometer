@@ -129,38 +129,29 @@ Suites.push({
     async prepare(page) {
         await page.waitForElement("#nav-link-masonry");
     },
+    type: "async",
     tests: [
-        /* new BenchmarkTestStep("Navigate-to-masonry", (page) => {
-            page.querySelector("#layout").setWidth("400px");
-            page.layout();
+        new BenchmarkTestStep("TestStep-1", async (page) => {
+            const imageButton = await page.waitForElement("#justified-unsplash-image-01");
+            imageButton.click();
+            const closeButton = await page.waitForElement("#close-modal-button");
+            closeButton.click();
+        }),
+        new BenchmarkTestStep("TestStep-2", async (page) => {
             page.querySelector("#nav-link-masonry").click();
+            const imageButton = await page.waitForElement("#masonry-unsplash-image-02");
+            imageButton.click();
+            const closeButton = await page.waitForElement("#close-modal-button");
+            closeButton.click();
             page.layout();
         }),
-        new BenchmarkTestStep("Navigate-to-Justified", (page) => {
+        new BenchmarkTestStep("TestStep-3", async (page) => {
             page.querySelector("#nav-link-justified").click();
-            page.layout();
-        }),
-        new BenchmarkTestStep("Navigate-back-to-masonry", (page) => {
-            page.querySelector("#layout").setWidth("100%");
-            page.layout();
-            page.querySelector("#nav-link-masonry").click();
-            page.layout();
-        }),
-        new BenchmarkTestStep("Navigate-back-to-Justified", (page) => {
-            page.querySelector("#nav-link-justified").click();
-            page.layout();
-        }), */
-        new BenchmarkTestStep("Navigate-to-masonry", (page) => {
-            page.querySelector("#unsplash-image-01").click();
-            // page.querySelector("close-modal-button").click();
-        }),
-        new BenchmarkTestStep("Navigate-to-masonry2", (page) => {
-            page.querySelector("#unsplash-image-02").click();
-            // page.querySelector("close-modal-button").click();
-        }),
-        new BenchmarkTestStep("Navigate-to-masonry3", (page) => {
-            page.querySelector("#unsplash-image-03").click();
-            // page.querySelector("close-modal-button").click();
+            page.querySelector("#orientation-toggle").click();
+            const imageButton = await page.waitForElement("#justified-unsplash-image-03");
+            imageButton.click();
+            const closeButton = await page.waitForElement("#close-modal-button");
+            closeButton.click();
         }),
     ],
 });

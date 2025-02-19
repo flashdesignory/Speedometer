@@ -120,7 +120,7 @@ export default function MasonryLayout({ data = { items: [] } }) {
                         return (
                             <div key={`masonry-column-${index}`} className={styles["masonry-column"]}>
                                 {column.map((item) =>
-                                    <ImageDisplay key={item.id} data={item} width={sizes[item.id].width} height={sizes[item.id].height} containerStyles={customStyles} onClick={handleOnClick}/>
+                                    <ImageDisplay key={item.id} id={`masonry-${item.id}`} data={item} width={sizes[item.id].width} height={sizes[item.id].height} containerStyles={customStyles} onClick={handleOnClick}/>
                                 )}
                             </div>
                         );

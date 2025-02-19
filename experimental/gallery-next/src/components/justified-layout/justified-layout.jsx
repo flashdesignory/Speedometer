@@ -69,7 +69,7 @@ export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight =
             <div className={styles["justified-layout-container"]} ref={elementRef}>
                 <div className={styles["justified-layout-content"]}>
                     {data.items.map((item, index) =>
-                        <ImageDisplay key={item.id} data={item} width={sizes[index].width} height={sizes[index].height} onClick={handleOnClick}/>
+                        <ImageDisplay key={item.id} id={`justified-${item.id}`} data={item} width={sizes[index].width} height={sizes[index].height} onClick={handleOnClick}/>
                     )}
                 </div>
             </div>
