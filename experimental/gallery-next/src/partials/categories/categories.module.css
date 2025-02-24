@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    gap: 8px;
+}
+
+.button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4px 8px;
+    background-color: var(--neutrals-gray-128);
+    border-radius: 4px;
+    transition-property: color, background-color;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: var(--neutrals-gray-153);
+}
+
+.button.active {
+    background-color: var(--neutrals-gray-204);
+    border: 1px;
+}

@@ -6,54 +6,40 @@ import styles from "./masonry-layout.module.css";
 import { useResizeObserver } from "@/hooks/use-resize-observer/use-resize-observer";
 import { useThrottle } from "@/hooks/use-throttle/use-throttle";
 import Modal from "@/partials/modal/modal";
+import { useDataContext } from "@/context/data-context";
 
 export const getNewHeight = (width, height, targetWidth) => (height / width) * targetWidth;
 
-export default function MasonryLayout({ data = { items: [] } }) {
+export default function MasonryLayout() {
+    const { data, category } = useDataContext();
     const [selectedImage, setSelectedImage] = useState(null);
-
-    useLayoutEffect(() => {
-        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "masonry" } }));
-    }, []);
-
-    function closeModal() {
-        setSelectedImage(null);
-    }
-
-    const numColumns = useRef(3);
-    function rebuild() {
-        const columns = [];
-        // create an array for each column
-        for (let i = 0; i < numColumns.current; i++)
-            columns[i] = [];
-
-        // push element data in the appropriate column
-        for (let i = 0; i < data.items.length; i++) {
-            const index = i % numColumns.current;
-            columns[index].push(data.items[i]);
-        }
-
-        return columns;
-    }
-
-    const [columns, setColumns] = useState(rebuild());
+    const [currentImages, setCurrentImages] = useState(category === "all" ? data.items : data.items.filter(item => item.tags.includes(category)));
+    const [sizes, setSizes] = useState(
+        currentImages.reduce((accumulator, item) => {
+            accumulator[item.id] = { width: 0, height: 0 };
+            return accumulator;
+        }, {})
+    );
+    const [containerWidth, setContainerWidth] = useState(-1);
+    const { elementRef, disconnect } = useResizeObserver({
+        callback: useThrottle(handleOnResize, 0),
+    });
+    const numColumns = useRef(5);
 
     const customStyles = {
         width: "100%",
         height: "auto",
     };
 
-    const [sizes, setSizes] = useState(
-        data.items.reduce((accumulator, item) => {
-            accumulator[item.id] = { width: 0, height: 0 };
-            return accumulator;
-        }, {})
-    );
+    useLayoutEffect(() => {
+        const newImages = category === "all" ? data.items : data.items.filter(item => item.tags.includes(category));
+        setCurrentImages(newImages);
+        resize(containerWidth, newImages);
+    }, [category]);
 
-    const [containerWidth, setContainerWidth] = useState(-1);
-    const { elementRef, disconnect } = useResizeObserver({
-        callback: useThrottle(handleOnResize, 0),
-    });
+    useLayoutEffect(() => {
+        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "masonry" } }));
+    }, []);
 
     function handleOnResize(entries) {
         for (let entry of entries) {
@@ -66,16 +52,24 @@ export default function MasonryLayout({ data = { items: [] } }) {
         }
     }
 
-    function resize(containerWidth) {
-        /* if (containerWidth >= 1363)
-            numColumns.current = 5;
-        else if (containerWidth >= 1111)
-            numColumns.current = 4;
-        else if (containerWidth >= 859 )
-            numColumns.current = 3;
-        else
-            numColumns.current = 2; */
+    function rebuild(images) {
+        const columns = [];
+        // create an array for each column
+        for (let i = 0; i < numColumns.current; i++)
+            columns[i] = [];
 
+        // push element data in the appropriate column
+        for (let i = 0; i < images.length; i++) {
+            const index = i % numColumns.current;
+            columns[index].push(images[i]);
+        }
+
+        return columns;
+    }
+
+    const [columns, setColumns] = useState(rebuild(currentImages));
+
+    function resize(width, images = currentImages) {
         const COLUMNS_LOOKUP = {
             __proto__: null,
             721: 3,
@@ -85,18 +79,17 @@ export default function MasonryLayout({ data = { items: [] } }) {
 
         let selectedKey = 0;
         Object.keys(COLUMNS_LOOKUP).forEach((num) => {
-            // console.log(num, num / containerWidth)
-            const val = num / containerWidth;
+            const val = num / width;
             if (val < 1)
                 selectedKey = Math.max(selectedKey, num);
         });
 
         numColumns.current = COLUMNS_LOOKUP[selectedKey] ?? 2;
 
-        setColumns(rebuild());
+        setColumns(rebuild(images));
 
-        const newWidth = containerWidth / numColumns.current;
-        const newSizes = data.items.map((entry) => {
+        const newWidth = width / numColumns.current;
+        const newSizes = images.map((entry) => {
             const item = { ...entry.image };
             item.height = getNewHeight(item.width, item.height, newWidth);
             item.width = newWidth;
@@ -114,6 +107,10 @@ export default function MasonryLayout({ data = { items: [] } }) {
 
     function handleOnClick(data) {
         setSelectedImage(data);
+    }
+
+    function closeModal() {
+        setSelectedImage(null);
     }
 
     return (

@@ -1,4 +1,5 @@
 {
+    "imageMaxHeight": 480,
     "items": [
         {
             "id": "unsplash-image-01",

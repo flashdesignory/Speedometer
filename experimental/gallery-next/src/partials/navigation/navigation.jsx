@@ -5,6 +5,7 @@ import MasonryIcon from "@/assets/masonry-icon";
 import styles from "./navigation.module.css";
 import Toggle from "../toggle/toggle";
 import OrientationIcon from "@/assets/orientation-icon";
+import Categories from "../categories/categories";
 
 export default function Navigation({ callback }) {
     return (
@@ -17,7 +18,12 @@ export default function Navigation({ callback }) {
                     <NavLink to="/masonry" id="nav-link-masonry" className={({ isActive }) => classNames(styles["page-navigation-button"], { [styles.active]: isActive })}>
                         <MasonryIcon />
                     </NavLink>
-                    <Toggle id="orientation-toggle" icon={OrientationIcon} callback={callback}/>
+                    <Toggle id="orientation-toggle" icon={OrientationIcon} callback={callback} />
+                </div>
+            </div>
+            <div className={styles["page-navigation-row"]}>
+                <div className={styles["page-navigation-column-center"]}>
+                    <Categories />
                 </div>
             </div>
         </nav>

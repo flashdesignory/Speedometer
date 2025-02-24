@@ -6,20 +6,14 @@ import styles from "./justified-layout.module.css";
 import { useResizeObserver } from "@/hooks/use-resize-observer/use-resize-observer";
 import { useThrottle } from "@/hooks/use-throttle/use-throttle";
 import Modal from "@/partials/modal/modal";
+import { useDataContext } from "@/context/data-context";
 
-export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight = 480 }) {
+export default function JustifiedLayout() {
+    const { data, category } = useDataContext();
     const [selectedImage, setSelectedImage] = useState(null);
-
-    useLayoutEffect(() => {
-        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "justified" } }));
-    }, []);
-
-    function closeModal() {
-        setSelectedImage(null);
-    }
-
+    const [currentImages, setCurrentImages] = useState(category === "all" ? data.items : data.items.filter(item => item.tags.includes(category)));
     const [sizes, setSizes] = useState(
-        data.items.map(() => ({
+        currentImages.map(() => ({
             width: 0,
             height: 0,
         }))
@@ -28,6 +22,16 @@ export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight =
     const { elementRef, disconnect } = useResizeObserver({
         callback: useThrottle(handleOnResize, 250),
     });
+
+    useLayoutEffect(() => {
+        const newImages = category === "all" ? data.items : data.items.filter(item => item.tags.includes(category));
+        setCurrentImages(newImages);
+        resize(containerWidth, newImages);
+    }, [category]);
+
+    useLayoutEffect(() => {
+        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "justified" } }));
+    }, []);
 
     function handleOnResize(entries) {
         for (let entry of entries) {
@@ -40,16 +44,16 @@ export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight =
         }
     }
 
-    function resize(containerWidth) {
+    function resize(width, images = currentImages) {
         let row = [];
         let currentWidth = 0;
-        const newSizes = data.items.map((entry, index) => {
+        const newSizes = images.map((entry, index) => {
             const item = { ...entry.image };
             row.push(item);
-            currentWidth += Math.ceil((imageMaxHeight / item.height) * item.width);
+            currentWidth += Math.ceil((data.imageMaxHeight / item.height) * item.width);
 
-            if (currentWidth >= containerWidth || index === sizes.length - 1) {
-                const height = Math.floor((containerWidth / currentWidth) * imageMaxHeight);
+            if (currentWidth >= width || index === sizes.length - 1) {
+                const height = Math.floor((width / currentWidth) * data.imageMaxHeight);
                 row.forEach((image) => {
                     const width = Math.floor((height / image.height) * image.width);
                     image.width = width;
@@ -68,11 +72,15 @@ export default function JustifiedLayout({ data = { items: [] }, imageMaxHeight =
         setSelectedImage(data);
     }
 
+    function closeModal() {
+        setSelectedImage(null);
+    }
+
     return (
         <>
             <div className={styles["justified-layout-container"]} ref={elementRef}>
                 <div className={styles["justified-layout-content"]}>
-                    {data.items.map((item, index) =>
+                    {currentImages.map((item, index) =>
                         <ImageDisplay key={item.id} id={`justified-${item.id}`} data={item} width={sizes[index].width} height={sizes[index].height} onClick={handleOnClick}/>
                     )}
                 </div>

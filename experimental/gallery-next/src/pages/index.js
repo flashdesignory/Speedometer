@@ -1,9 +1,9 @@
 import Head from "next/head";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import data from "public/data/unsplash.json";
 import Page from "@/partials/page/page";
-import JustifiedLayout from "@/components/justified-layout/justified-layout";
+import { DataContextProvider } from "@/context/data-context";
 import MasonryLayout from "@/components/masonry-layout/masonry-layout";
+import JustifiedLayout from "@/components/justified-layout/justified-layout";
 
 export default function App() {
     return (
@@ -13,27 +13,28 @@ export default function App() {
                 <meta name="description" content="A photo gallery with different layouts." key="description" />
                 <meta httpEquiv="Permissions-Policy" content="interest-cohort=()" />
             </Head>
-
-            <Router>
-                <Routes>
-                    <Route
-                        path="/masonry"
-                        element={
-                            <Page id="masonry">
-                                <MasonryLayout data={data} />
-                            </Page>
-                        }
-                    />
-                    <Route
-                        path="/"
-                        element={
-                            <Page id="justified">
-                                <JustifiedLayout data={data} />
-                            </Page>
-                        }
-                    />
-                </Routes>
-            </Router>
+            <DataContextProvider>
+                <Router>
+                    <Routes>
+                        <Route
+                            path="/masonry"
+                            element={
+                                <Page id="masonry">
+                                    <MasonryLayout />
+                                </Page>
+                            }
+                        />
+                        <Route
+                            path="/"
+                            element={
+                                <Page id="justified">
+                                    <JustifiedLayout />
+                                </Page>
+                            }
+                        />
+                    </Routes>
+                </Router>
+            </DataContextProvider>
         </>
     );
 }
