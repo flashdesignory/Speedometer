@@ -1,5 +1,5 @@
 import ImageContainer from "../image-container/image-container";
-
+import classNames from "classnames";
 import { useSize } from "@/hooks/use-size/use-size";
 
 import styles from "./image-display.module.css";
@@ -22,7 +22,7 @@ export default function ImageDisplay({ id, data, width, height, containerStyles 
 
     return (
         <div className={styles["display-image-container"]} style={customStyles}>
-            <div className={styles["display-image-content"]} id={id} onClick={handleOnClick} >
+            <div className={classNames(styles["display-image-content"], "gallery-image")} id={id} onClick={handleOnClick} >
                 <ImageContainer id={id} {...data.image} />
             </div>
         </div>

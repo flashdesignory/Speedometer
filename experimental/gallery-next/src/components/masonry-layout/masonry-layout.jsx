@@ -35,6 +35,7 @@ export default function MasonryLayout() {
         const newImages = category === "all" ? data.items : data.items.filter(item => item.tags.includes(category));
         setCurrentImages(newImages);
         resize(containerWidth, newImages);
+        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "masonry" } }));
     }, [category]);
 
     useLayoutEffect(() => {

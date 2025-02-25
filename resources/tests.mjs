@@ -197,6 +197,45 @@ Suites.push({
 });
 
 Suites.push({
+    name: "Gallery-Next-3",
+    url: "experimental/gallery-next/dist/index.html",
+    tags: ["gallery"],
+    disabled: true,
+    async prepare(page) {
+        await page.waitForElement("#nav-link-masonry");
+    },
+    type: "async",
+    tests: [
+        new BenchmarkTestStep("ToggleAndShowImage", async (page) => {
+            page.querySelectorAll(".gallery-image")[0].click();
+            await page.waitForEvent("modal-ready");
+            page.querySelector("#close-modal-button").click();
+            page.querySelector("#category-button-forest").click();
+            await page.waitForEvent("gallery-ready");
+            page.querySelectorAll(".gallery-image")[0].click();
+            await page.waitForEvent("modal-ready");
+            page.querySelector("#close-modal-button").click();
+
+            page.querySelector("#nav-link-masonry").click();
+            await page.waitForEvent("gallery-ready");
+            page.querySelector("#category-button-coast").click();
+            await page.waitForEvent("gallery-ready");
+            page.querySelectorAll(".gallery-image")[0].click();
+            await page.waitForEvent("modal-ready");
+            page.querySelector("#close-modal-button").click();
+
+            page.querySelector("#nav-link-justified").click();
+            await page.waitForEvent("gallery-ready");
+            page.querySelector("#category-button-hills").click();
+            await page.waitForEvent("gallery-ready");
+            page.querySelectorAll(".gallery-image")[0].click();
+            await page.waitForEvent("modal-ready");
+            page.querySelector("#close-modal-button").click();
+        }),
+    ],
+});
+
+Suites.push({
     name: "TodoMVC-JavaScript-ES5",
     url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
     tags: ["todomvc"],

@@ -20,7 +20,7 @@ export default function Categories() {
     return (
         <div className={styles.container}>
             {Array.from(tags).map((tag) =>
-                <button className={classNames(styles.button, { [styles.active]: category === tag })} key={`category-button-${tag}`} data-category={tag} onClick={handleClick}>
+                <button className={classNames(styles.button, { [styles.active]: category === tag })} key={`category-button-${tag}`} id={`category-button-${tag}`} data-category={tag} onClick={handleClick}>
                     {tag}
                 </button>
             )}
