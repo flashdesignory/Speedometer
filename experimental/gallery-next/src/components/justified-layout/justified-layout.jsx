@@ -31,7 +31,7 @@ export default function JustifiedLayout() {
     }, [category]);
 
     useLayoutEffect(() => {
-        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "justified" } }));
+        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "masonry" } }));
     }, []);
 
     function handleOnResize(entries) {
