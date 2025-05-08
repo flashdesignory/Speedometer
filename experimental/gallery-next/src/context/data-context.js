@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useLayoutEffect, useState } from "react";
 import data from "public/data/unsplash.json";
 
 const DataContext = createContext(null);
@@ -6,6 +6,14 @@ const DataContext = createContext(null);
 export const DataContextProvider = ({ children }) => {
     const [currentData, setCurrentData] = useState({ ...data });
     const [currentCategory, setCurrentCategory] = useState("all");
+
+    useLayoutEffect(() => {
+        window.dispatchEvent(new CustomEvent("category-changed", { detail: { category: currentCategory } }));
+    }, [currentCategory]);
+
+    useLayoutEffect(() => {
+        window.dispatchEvent(new CustomEvent("data-changed", { detail: { data: currentData } }));
+    }, [currentData]);
 
     const updateData = (newValue) => {
         setCurrentData({

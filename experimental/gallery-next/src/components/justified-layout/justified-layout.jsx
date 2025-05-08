@@ -27,12 +27,8 @@ export default function JustifiedLayout() {
         const newImages = category === "all" ? data.items : data.items.filter(item => item.tags.includes(category));
         setCurrentImages(newImages);
         resize(containerWidth, newImages);
-        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "justified" } }));
+        window.dispatchEvent(new CustomEvent("gallery-changed", { detail: { id: "justified", category } }));
     }, [category]);
-
-    useLayoutEffect(() => {
-        window.dispatchEvent(new CustomEvent("gallery-ready", { detail: { id: "justified" } }));
-    }, []);
 
     function handleOnResize(entries) {
         for (let entry of entries) {

@@ -132,6 +132,7 @@ Suites.push({
     type: "async",
     tests: [
         new BenchmarkTestStep("ToggleAndShowImage", async (page) => {
+            // Toggle orientation, open first image in modal and close.
             const toggleButton = await page.waitForElement("#orientation-toggle");
             toggleButton.click();
             toggleButton.click();
@@ -141,17 +142,19 @@ Suites.push({
             closeButton.click();
         }),
         new BenchmarkTestStep("MasonryAndShowImage", async (page) => {
+            // Switch to masonry layout, open first image in modal and close.
             const navButton = await page.waitForElement("#nav-link-masonry");
             navButton.click();
-            const imageButton = await page.waitForElement("#masonry-unsplash-image-02");
+            const imageButton = await page.waitForElement("#masonry-unsplash-image-01");
             imageButton.click();
             const closeButton = await page.waitForElement("#close-modal-button");
             closeButton.click();
         }),
         new BenchmarkTestStep("JustifiedAndShowImage", async (page) => {
+            // Siwtch back to justified layout, open first image in modal and close.
             const navButton = await page.waitForElement("#nav-link-justified");
             navButton.click();
-            const imageButton = await page.waitForElement("#justified-unsplash-image-03");
+            const imageButton = await page.waitForElement("#justified-unsplash-image-01");
             imageButton.click();
             const closeButton = await page.waitForElement("#close-modal-button");
             closeButton.click();
@@ -159,6 +162,7 @@ Suites.push({
     ],
 });
 
+// similar test, but using 'waitForEvent' instead.
 Suites.push({
     name: "Gallery-Next-2",
     url: "experimental/gallery-next/dist/index.html",
@@ -178,7 +182,7 @@ Suites.push({
             page.querySelector("#close-modal-button").click();
         }),
         new BenchmarkTestStep("MasonryAndShowImage", async (page) => {
-            const imageId = "masonry-unsplash-image-02";
+            const imageId = "masonry-unsplash-image-01";
             page.querySelector("#nav-link-masonry").click();
             await page.waitForEventWithId("image-ready", imageId);
             page.querySelector(`#${imageId}`).click();
@@ -186,7 +190,7 @@ Suites.push({
             page.querySelector("#close-modal-button").click();
         }),
         new BenchmarkTestStep("JustifiedAndShowImage", async (page) => {
-            const imageId = "justified-unsplash-image-03";
+            const imageId = "justified-unsplash-image-01";
             page.querySelector("#nav-link-justified").click();
             await page.waitForEventWithId("image-ready", imageId);
             page.querySelector(`#${imageId}`).click();
@@ -196,6 +200,7 @@ Suites.push({
     ],
 });
 
+// switch categories
 Suites.push({
     name: "Gallery-Next-3",
     url: "experimental/gallery-next/dist/index.html",
@@ -207,27 +212,33 @@ Suites.push({
     type: "async",
     tests: [
         new BenchmarkTestStep("ToggleAndShowImage", async (page) => {
+            let temp = "";
             page.querySelectorAll(".gallery-image")[0].click();
             await page.waitForEvent("modal-ready");
             page.querySelector("#close-modal-button").click();
             page.querySelector("#category-button-forest").click();
-            await page.waitForEvent("gallery-ready");
+            temp = await page.waitForEvent("gallery-changed");
+            console.log(temp);
             page.querySelectorAll(".gallery-image")[0].click();
             await page.waitForEvent("modal-ready");
             page.querySelector("#close-modal-button").click();
 
             page.querySelector("#nav-link-masonry").click();
-            await page.waitForEvent("gallery-ready");
+            temp = await page.waitForEvent("gallery-changed");
+            console.log(temp);
             page.querySelector("#category-button-coast").click();
-            await page.waitForEvent("gallery-ready");
+            temp = await page.waitForEvent("gallery-changed");
+            console.log(temp);
             page.querySelectorAll(".gallery-image")[0].click();
             await page.waitForEvent("modal-ready");
             page.querySelector("#close-modal-button").click();
 
             page.querySelector("#nav-link-justified").click();
-            await page.waitForEvent("gallery-ready");
+            temp = await page.waitForEvent("gallery-changed");
+            console.log(temp);
             page.querySelector("#category-button-hills").click();
-            await page.waitForEvent("gallery-ready");
+            temp = await page.waitForEvent("gallery-changed");
+            console.log(temp);
             page.querySelectorAll(".gallery-image")[0].click();
             await page.waitForEvent("modal-ready");
             page.querySelector("#close-modal-button").click();
