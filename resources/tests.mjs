@@ -212,33 +212,27 @@ Suites.push({
     type: "async",
     tests: [
         new BenchmarkTestStep("ToggleAndShowImage", async (page) => {
-            let temp = "";
             page.querySelectorAll(".gallery-image")[0].click();
             await page.waitForEvent("modal-ready");
             page.querySelector("#close-modal-button").click();
             page.querySelector("#category-button-forest").click();
-            temp = await page.waitForEvent("gallery-changed");
-            console.log(temp);
+            await page.waitForEvent("gallery-changed");
             page.querySelectorAll(".gallery-image")[0].click();
             await page.waitForEvent("modal-ready");
             page.querySelector("#close-modal-button").click();
 
             page.querySelector("#nav-link-masonry").click();
-            temp = await page.waitForEvent("gallery-changed");
-            console.log(temp);
+            await page.waitForEvent("gallery-changed");
             page.querySelector("#category-button-coast").click();
-            temp = await page.waitForEvent("gallery-changed");
-            console.log(temp);
+            await page.waitForEvent("gallery-changed");
             page.querySelectorAll(".gallery-image")[0].click();
             await page.waitForEvent("modal-ready");
             page.querySelector("#close-modal-button").click();
 
             page.querySelector("#nav-link-justified").click();
-            temp = await page.waitForEvent("gallery-changed");
-            console.log(temp);
+            await page.waitForEvent("gallery-changed");
             page.querySelector("#category-button-hills").click();
-            temp = await page.waitForEvent("gallery-changed");
-            console.log(temp);
+            await page.waitForEvent("gallery-changed");
             page.querySelectorAll(".gallery-image")[0].click();
             await page.waitForEvent("modal-ready");
             page.querySelector("#close-modal-button").click();

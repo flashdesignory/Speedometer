@@ -4,11 +4,11 @@ import { useSize } from "@/hooks/use-size/use-size";
 import styles from "./modal.module.css";
 import { useLayoutEffect } from "react";
 
-export default function Modal({ onClose, data }) {
+export default function Modal({ onClose, data, category }) {
     const { aspectRatio } = useSize({ width: data.image.width, height: data.image.height });
 
     useLayoutEffect(() => {
-        window.dispatchEvent(new CustomEvent("modal-ready", { detail: { id: data.id } }));
+        window.dispatchEvent(new CustomEvent("modal-ready", { detail: { id: data.id, category } }));
     }, []);
 
     return (

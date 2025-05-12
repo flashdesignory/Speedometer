@@ -125,7 +125,7 @@ export default function MasonryLayout() {
                     })}
                 </div>
             </div>
-            {selectedImage ? createPortal(<Modal onClose={closeModal} data={selectedImage} />, document.getElementById("modal-container")) : null}
+            {selectedImage ? createPortal(<Modal onClose={closeModal} data={selectedImage} category={category} />, document.getElementById("modal-container")) : null}
         </>
     );
 }
