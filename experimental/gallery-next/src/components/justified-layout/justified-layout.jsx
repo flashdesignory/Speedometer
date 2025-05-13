@@ -71,7 +71,7 @@ export default function JustifiedLayout() {
         });
     }
 
-    function handleOnClick(data) {
+    function setImage(data) {
         setSelectedImage(data);
     }
 
@@ -79,14 +79,21 @@ export default function JustifiedLayout() {
         setSelectedImage(null);
     }
 
+    function loadMore() {
+        console.log("loadMore()");
+    }
+
     return (
         <>
             <div className={styles["justified-layout-container"]} ref={elementRef}>
                 <div className={styles["justified-layout-content"]}>
                     {currentImages.map((item, index) =>
-                        <ImageDisplay key={item.id} id={`justified-${item.id}`} data={item} width={sizes[index].width} height={sizes[index].height} onClick={handleOnClick}/>
+                        <ImageDisplay key={item.id} id={`justified-${item.id}`} data={item} width={sizes[index].width} height={sizes[index].height} onClick={setImage}/>
                     )}
                 </div>
+            </div>
+            <div className={styles["load-more-container"]}>
+                <button className={styles["load-more"]} onClick={loadMore}>load more..</button>
             </div>
             {selectedImage ? createPortal(<Modal onClose={closeModal} data={selectedImage} category={category} />, document.getElementById("modal-container")) : null}
         </>

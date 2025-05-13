@@ -110,12 +110,16 @@ export default function MasonryLayout() {
         });
     }
 
-    function handleOnClick(data) {
+    function setImage(data) {
         setSelectedImage(data);
     }
 
     function closeModal() {
         setSelectedImage(null);
+    }
+
+    function loadMore() {
+        console.log("loadMore()");
     }
 
     return (
@@ -126,12 +130,15 @@ export default function MasonryLayout() {
                         return (
                             <div key={`masonry-column-${index}`} className={styles["masonry-column"]}>
                                 {column.map((item) =>
-                                    <ImageDisplay key={item.id} id={`masonry-${item.id}`} data={item} width={sizes[item.id].width} height={sizes[item.id].height} containerStyles={customStyles} onClick={handleOnClick}/>
+                                    <ImageDisplay key={item.id} id={`masonry-${item.id}`} data={item} width={sizes[item.id].width} height={sizes[item.id].height} containerStyles={customStyles} onClick={setImage}/>
                                 )}
                             </div>
                         );
                     })}
                 </div>
+            </div>
+            <div className={styles["load-more-container"]}>
+                <button className={styles["load-more"]} onClick={loadMore}>load more..</button>
             </div>
             {selectedImage ? createPortal(<Modal onClose={closeModal} data={selectedImage} category={category} />, document.getElementById("modal-container")) : null}
         </>
