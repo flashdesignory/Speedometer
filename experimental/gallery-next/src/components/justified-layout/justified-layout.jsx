@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { createPortal, flushSync } from "react-dom";
 import ImageDisplay from "../image-display/image-display";
 import styles from "./justified-layout.module.css";
 
@@ -25,7 +25,9 @@ export default function JustifiedLayout() {
 
     useLayoutEffect(() => {
         const newImages = category === "all" ? data.items : data.items.filter(item => item.tags.includes(category));
-        setCurrentImages(newImages);
+        flushSync(() => {
+            setCurrentImages(newImages);
+        });
         resize(containerWidth, newImages);
         window.dispatchEvent(new CustomEvent("gallery-changed", { detail: { id: "justified", category } }));
     }, [category]);
@@ -36,7 +38,9 @@ export default function JustifiedLayout() {
                 return;
 
             disconnect();
-            setContainerWidth(entry.contentRect.width);
+            flushSync(() => {
+                setContainerWidth(entry.contentRect.width);
+            });
             resize(entry.contentRect.width);
         }
     }
@@ -62,7 +66,9 @@ export default function JustifiedLayout() {
             return item;
         });
 
-        setSizes(newSizes);
+        flushSync(() => {
+            setSizes(newSizes);
+        });
     }
 
     function handleOnClick(data) {

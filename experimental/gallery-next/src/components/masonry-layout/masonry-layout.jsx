@@ -1,5 +1,5 @@
 import { useState, useRef, useLayoutEffect } from "react";
-import { createPortal } from "react-dom";
+import { createPortal, flushSync } from "react-dom";
 import ImageDisplay from "../image-display/image-display";
 import styles from "./masonry-layout.module.css";
 
@@ -33,7 +33,9 @@ export default function MasonryLayout() {
 
     useLayoutEffect(() => {
         const newImages = category === "all" ? data.items : data.items.filter(item => item.tags.includes(category));
-        setCurrentImages(newImages);
+        flushSync(() => {
+            setCurrentImages(newImages);
+        });
         resize(containerWidth, newImages);
         window.dispatchEvent(new CustomEvent("gallery-changed", { detail: { id: "masonry", category } }));
     }, [category]);
@@ -44,7 +46,9 @@ export default function MasonryLayout() {
                 return;
 
             disconnect();
-            setContainerWidth(entry.contentRect.width);
+            flushSync(() => {
+                setContainerWidth(entry.contentRect.width);
+            });
             resize(entry.contentRect.width);
         }
     }
@@ -83,7 +87,9 @@ export default function MasonryLayout() {
 
         numColumns.current = COLUMNS_LOOKUP[selectedKey] ?? 2;
 
-        setColumns(rebuild(images));
+        flushSync(() => {
+            setColumns(rebuild(images));
+        });
 
         const newWidth = width / numColumns.current;
         const newSizes = images.map((entry) => {
@@ -94,12 +100,14 @@ export default function MasonryLayout() {
             return item;
         });
 
-        setSizes(
-            newSizes.reduce((accumulator, item) => {
-                accumulator[item.id] = { width: item.width, height: item.height };
-                return accumulator;
-            }, {})
-        );
+        flushSync(() => {
+            setSizes(
+                newSizes.reduce((accumulator, item) => {
+                    accumulator[item.id] = { width: item.width, height: item.height };
+                    return accumulator;
+                }, {})
+            );
+        });
     }
 
     function handleOnClick(data) {
